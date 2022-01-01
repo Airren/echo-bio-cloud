@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/airren/echo-bio-backend/model/vo"
 	"net/http"
 
@@ -26,14 +27,31 @@ func UserLogin(c *gin.Context) {
 func UserInfo(c *gin.Context) {
 	token := c.GetHeader("token")
 	claims, err := auth.ParseJwtToken(token)
-	data := &vo.User{}
 	if err != nil {
-		bindRespWithStatus(c, http.StatusUnauthorized, data, err)
+		bindRespWithStatus(c, http.StatusUnauthorized, nil, err)
 		return
 	}
-	data.User = claims.User
-	data.Access = "user"
-	bindResp(c, data, nil)
+
+	userVO := &vo.User{
+		Access:      "admin",
+		Name:        claims.Name,
+		Avatar:      claims.Avatar,
+		UserId:      claims.Id,
+		Email:       claims.Email,
+		Signature:   "",
+		Title:       "",
+		Group:       "",
+		NotifyCount: "",
+		UnreadCount: "",
+		Country:     "",
+		Address:     fmt.Sprint(claims.Address),
+		Phone:       claims.Phone,
+	}
+
+	baseVo := vo.BaseVO{}
+	baseVo.SetData(userVO)
+
+	bindResp(c, &baseVo, nil)
 }
 
 func UserLogout(c *gin.Context) {

@@ -67,12 +67,14 @@ type VO interface {
 	SetErrCode()
 	SetErrMsg()
 	SetPageInfo()
+	SetData(interface{})
 }
 
 type BaseVO struct {
-	ErrCode int `json:"error_code"`
+	ErrCode  int           `json:"error_code"`
 	ErrMsg   string        `json:"error_message"`
 	PageInfo *RespPageInfo `json:"page_info,omitempty"`
+	Data     interface{}   `json:"data"`
 }
 
 func (b *BaseVO) SetErrCode() {
@@ -81,4 +83,8 @@ func (b *BaseVO) SetErrMsg() {
 }
 
 func (b *BaseVO) SetPageInfo() {
+}
+
+func (b *BaseVO) SetData(data interface{}) {
+	b.Data = data
 }
