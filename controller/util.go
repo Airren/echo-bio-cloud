@@ -2,25 +2,25 @@ package controller
 
 import (
 	"context"
-	"github.com/airren/echo-bio-backend/model/vo"
+	"github.com/airren/echo-bio-backend/model"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"strings"
 )
 
-func bindResp(c *gin.Context, data vo.VO, err error) {
+func bindResp(c *gin.Context, data interface{}, err error) {
 	bindRespWithStatus(c, 200, data, err)
 }
 
-func bindRespWithStatus(c *gin.Context, code int, data vo.VO, err error) {
+func bindRespWithStatus(c *gin.Context, code int, data interface{}, err error) {
 	bindRespWithStatusAndPageInfo(c, code, data, nil, err)
 }
 
-func bindRespWithPageInfo(c *gin.Context, data vo.VO, pageInfo *vo.PageInfo, err error) {
+func bindRespWithPageInfo(c *gin.Context, data interface{}, pageInfo *model.PageInfo, err error) {
 	bindRespWithStatusAndPageInfo(c, 200, data, pageInfo, err)
 }
 
-func bindRespWithStatusAndPageInfo(c *gin.Context, code int, data vo.VO, pageInfo *vo.PageInfo, err error) {
+func bindRespWithStatusAndPageInfo(c *gin.Context, code int, data interface{}, pageInfo *model.PageInfo, err error) {
 	//errCode := 0
 	//errMsg := ""
 	funcName := ""
@@ -44,7 +44,6 @@ func bindRespWithStatusAndPageInfo(c *gin.Context, code int, data vo.VO, pageInf
 	}
 
 	//helpers.ApiThroughput.Inc(getCtxByGinCtx(c), tagKv)
-
 
 	//data.ErrCode = errCode
 	//data.PageInfo = vo.NewRespPageInfo(pageInfo)

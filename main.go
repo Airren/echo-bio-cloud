@@ -29,6 +29,7 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
 	router.UserAPI(r)
+	router.AlgorithmAPI(r)
 	r.Use(middleware2.AuthMiddleware())
 	err := dal.InitMySQL()
 	if err != nil {

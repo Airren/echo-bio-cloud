@@ -3,11 +3,14 @@ module github.com/airren/echo-bio-backend
 go 1.17
 
 require (
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/casdoor/casdoor-go-sdk v0.0.12
 	github.com/gin-gonic/gin v1.7.4
 	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
-	gorm.io/driver/mysql v1.1.2
-	gorm.io/gorm v1.21.16
+	gopkg.in/yaml.v2 v2.4.0
+	gorm.io/driver/mysql v1.2.3
+	gorm.io/gorm v1.22.5
+
 )
 
 require (
@@ -19,7 +22,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.1.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.2 // indirect
+	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
@@ -32,5 +35,4 @@ require (
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

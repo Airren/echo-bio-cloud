@@ -6,14 +6,6 @@ import (
 )
 
 func ApiV_1(r *gin.Engine) {
-
-	task := r.Group("api/task")
-
-	task.GET("/:id", controller.GetOrderById)
-	task.POST("/create", controller.CreateOrder)
-	task.PUT("/update", controller.UpdateOrder)
-	task.POST("/list", controller.QueryOrders)
-
 }
 
 func UserAPI(r *gin.Engine) {
@@ -21,4 +13,11 @@ func UserAPI(r *gin.Engine) {
 	user.GET("/login", controller.UserLogin)
 	user.GET("/info", controller.UserInfo)
 	user.PUT("/logout", controller.UserLogout)
+}
+
+func AlgorithmAPI(r *gin.Engine) {
+	algo := r.Group("api/v1/algorithm")
+	algo.POST("/create", controller.CreateAlgorithm)
+	algo.PUT("/update", controller.UpdateAlgorithm)
+	algo.GET("/list", controller.QueryAlgorithm)
 }

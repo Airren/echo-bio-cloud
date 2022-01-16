@@ -1,0 +1,15 @@
+name: Pie
+label: 饼图
+image: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.51yuansu.com%2Fpic3%2Fcover%2F01%2F96%2F77%2F5983d609244bf_610.jpg&refer=http%3A%2F%2Fpic.51yuansu.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1644854285&t=512895d56bfe4b5f60ee6413440edb19
+description: 饼图也称为Sector Graph或Pie Graph，将数据按照其分布的比例，以饼图的形式呈现数据的占比。
+price: 0
+parameters:
+  - name: taskName
+    label: 任务名
+    required: true
+    # Enum: string, file, radio, select
+    type: string
+  - name: data
+    label: 选择数据表
+    required: true
+    type: file

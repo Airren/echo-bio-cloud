@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/echo-bio-backend.iml" filepath="$PROJECT_DIR$/.idea/echo-bio-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/echo-bio-cloud.iml" filepath="$PROJECT_DIR$/.idea/echo-bio-cloud.iml" />
     </modules>
   </component>
 </project>

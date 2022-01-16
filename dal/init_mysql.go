@@ -20,7 +20,9 @@ func InitMySQL() error {
 		return err
 	}
 	//db.SingularTable(true)
-	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Order{})
+	db = db.Debug()
+	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Algorithm{})
+	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Parameter{})
 	if err != nil {
 		return err
 	}
@@ -31,8 +33,6 @@ func InitMySQL() error {
 	//db.Model(&model.Order{}).AddIndex("idx_task_status", "status")
 	//db.Model(&model.Order{}).AddIndex("idx_task_group_id", "group_id")
 	//db.Model(&model.Order{}).AddIndex("idx_task_created_at", "created_at")
-
-	db.Debug()
 
 	return nil
 }
