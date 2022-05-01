@@ -12,7 +12,7 @@ func init() {
 }
 
 func TestCreateAlgorithm(t *testing.T) {
-	file, err := os.Open("../conf/venn.yaml")
+	file, err := os.Open("../conf/algo-pie.yaml")
 	if err != nil {
 		t.Fatal("invalid file path")
 	}

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/airren/echo-bio-backend/utils"
 	"io"
 	"mime/multipart"
 	"time"
@@ -15,6 +14,7 @@ import (
 	"github.com/airren/echo-bio-backend/model"
 	"github.com/airren/echo-bio-backend/model/req"
 	"github.com/airren/echo-bio-backend/model/vo"
+	"github.com/airren/echo-bio-backend/utils"
 )
 
 func QueryAlgorithm(c context.Context, req req.AlgorithmReq) (algoVOs []*vo.AlgorithmVO, err error) {
@@ -45,9 +45,10 @@ func CreateAlgorithm(c context.Context, file multipart.File) error {
 	} else if err != nil {
 		return fmt.Errorf("query old record failed %v", err)
 	}
+	userId, _ := utils.GetUserId(c)
 	algo.RecordMeta = model.RecordMeta{
 		Id:        utils.GenerateId(),
-		AccountId: 0,
+		AccountId: userId,
 		Org:       "",
 		CreatedAt: time.Now(),
 		CreatedBy: "Echo Bio",
@@ -97,6 +98,7 @@ func AlgorithmToEntity(req req.AlgorithmReq) *model.Algorithm {
 
 func AlgorithmToVO(algorithm model.Algorithm) *vo.AlgorithmVO {
 	return &vo.AlgorithmVO{
+		RecordMeta:  algorithm.RecordMeta,
 		Name:        algorithm.Name,
 		Label:       algorithm.Label,
 		Image:       algorithm.Image,

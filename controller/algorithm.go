@@ -21,7 +21,7 @@ import (
 // @Param id path uint true "task id"
 func GetAlgorithmById(c *gin.Context) {
 	idStr := c.Param("id")
-	ctx := utils.GetOrgCtx(c)
+	ctx := utils.GetCtx(c)
 
 	id, _ := strconv.Atoi(idStr)
 	task, _ := dal.GetAlgorithmById(ctx, int64(id))
@@ -49,7 +49,7 @@ func CreateAlgorithm(c *gin.Context) {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
 		return
 	}
-	ctx := utils.GetOrgCtx(c)
+	ctx := utils.GetCtx(c)
 	err = service.CreateAlgorithm(ctx, f)
 	bindResp(c, nil, err)
 }
@@ -74,7 +74,7 @@ func UpdateAlgorithm(c *gin.Context) {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
 		return
 	}
-	ctx := utils.GetOrgCtx(c)
+	ctx := utils.GetCtx(c)
 	err = service.UpdateAlgorithm(ctx, f)
 	bindResp(c, nil, err)
 
@@ -96,7 +96,7 @@ func QueryAlgorithm(c *gin.Context) {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
 		return
 	}
-	ctx := utils.GetOrgCtx(c)
+	ctx := utils.GetCtx(c)
 
 	algorithms, err := service.QueryAlgorithm(ctx, algoReq)
 	bindRespWithPageInfo(c, algorithms, nil, err)

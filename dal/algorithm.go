@@ -2,9 +2,10 @@ package dal
 
 import (
 	"context"
+	"time"
+
 	"github.com/airren/echo-bio-backend/model"
 	"github.com/airren/echo-bio-backend/utils"
-	"time"
 )
 
 func CreateAlgorithm(ctx context.Context, task *model.Algorithm) (*model.Algorithm, error) {
@@ -29,7 +30,9 @@ func QueryAlgorithms(ctx context.Context, algo *model.Algorithm, info *model.Pag
 		query = db.Where("label = ?", algo.Label)
 	}
 	err = query.Find(&algorithms).Error
-	query.Count(info.Total)
+	//if info != nil {
+	//	query.Count(info.Total)
+	//}
 
 	return algorithms, err
 }

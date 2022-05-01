@@ -13,7 +13,7 @@ func InitMySQL() error {
 	var (
 		err error
 	)
-	dsn := "root:1q2w3e4r5t@tcp(www.bytegopher.com:3307)/echo_bio_cloud?charset=utf8&parseTime=True&loc=Local"
+	dsn := "root:123456@tcp(nuc6:3306)/echo_bio?charset=utf8&parseTime=True&loc=Local"
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -22,6 +22,7 @@ func InitMySQL() error {
 	//db.SingularTable(true)
 	db = db.Debug()
 	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Algorithm{})
+	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Job{})
 	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Parameter{})
 	if err != nil {
 		return err

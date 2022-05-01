@@ -1,22 +1,22 @@
 package middleware
 
 import (
+	"github.com/casdoor/casdoor-go-sdk/auth"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(c *gin.Context) {
 
-	return func(c *gin.Context) {
-		//token := c.GetHeader("token")
-		//
-		//claims, err := auth.ParseJwtToken(token)
-		//if err != nil {
-		//	err = c.AbortWithError(405, fmt.Errorf("use err %s", err))
-		//	return
-		//}
-		//fmt.Println(claims)
-		//c.SetCookie()
-		c.Next()
+	token := c.GetHeader("token")
+
+	claims, err := auth.ParseJwtToken(token)
+	if err != nil {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
 	}
+	c.Set("user-id", claims.Id)
+	//c.SetCookie()
+	c.Next()
 
 }

@@ -12,3 +12,10 @@ func queryByPage(db *gorm.DB, info *model.PageInfo) *gorm.DB {
 	}
 	return db
 }
+
+func queryByUserId(db *gorm.DB, userId string) *gorm.DB {
+	if userId != "" {
+		return db.Where("account_id = ?", userId)
+	}
+	return db
+}

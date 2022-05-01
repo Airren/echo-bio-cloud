@@ -6,10 +6,6 @@ import (
 	middleware2 "github.com/airren/echo-bio-backend/middleware"
 	"github.com/airren/echo-bio-backend/router"
 	"github.com/gin-gonic/gin"
-
-	//"github.com/swaggo/gin-swagger" // gin-swagger middleware
-	//"github.com/swaggo/gin-swagger/swaggerFiles"
-	"net/http"
 )
 
 // @title Break Jail
@@ -28,24 +24,18 @@ func main() {
 
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
+	r.Use(middleware2.AuthMiddleware)
+
+	r.MaxMultipartMemory = 8 << 20
+
 	router.UserAPI(r)
 	router.AlgorithmAPI(r)
-	r.Use(middleware2.AuthMiddleware())
+	router.JobAPI(r)
+
 	err := dal.InitMySQL()
 	if err != nil {
 		panic(err)
 	}
-
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-
-	r.GET("/health", func(c *gin.Context) {
-		val := c.Query("val")
-		c.String(http.StatusOK, "ok: "+val)
-	})
 
 	//r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.ApiV_1(r)

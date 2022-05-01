@@ -1,14 +1,16 @@
 package router
 
 import (
-	"github.com/airren/echo-bio-backend/controller"
 	"github.com/gin-gonic/gin"
+
+	"github.com/airren/echo-bio-backend/controller"
 )
 
 func ApiV_1(r *gin.Engine) {
 }
 
 func UserAPI(r *gin.Engine) {
+
 	user := r.Group("api/user")
 	user.GET("/login", controller.UserLogin)
 	user.GET("/info", controller.UserInfo)
@@ -20,4 +22,10 @@ func AlgorithmAPI(r *gin.Engine) {
 	algo.POST("/create", controller.CreateAlgorithm)
 	algo.PUT("/update", controller.UpdateAlgorithm)
 	algo.GET("/list", controller.QueryAlgorithm)
+}
+
+func JobAPI(r *gin.Engine) {
+	job := r.Group("api/v1/job")
+	job.GET("/list", controller.QueryJob)
+	job.POST("/create", controller.CreateJob)
 }
