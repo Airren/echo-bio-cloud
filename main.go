@@ -24,11 +24,13 @@ func main() {
 
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
+	router.StaticAPI(r)
+	router.UserAPI(r)
+
 	r.Use(middleware2.AuthMiddleware)
 
 	r.MaxMultipartMemory = 8 << 20
 
-	router.UserAPI(r)
 	router.AlgorithmAPI(r)
 	router.JobAPI(r)
 

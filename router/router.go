@@ -2,6 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 
 	"github.com/airren/echo-bio-backend/controller"
 )
@@ -9,6 +10,10 @@ import (
 func ApiV_1(r *gin.Engine) {
 }
 
+func StaticAPI(r *gin.Engine) {
+	static := r.Group("api/static")
+	static.StaticFS("/data", http.Dir("./static"))
+}
 func UserAPI(r *gin.Engine) {
 
 	user := r.Group("api/user")

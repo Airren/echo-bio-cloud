@@ -5,7 +5,7 @@ import (
 	"github.com/airren/echo-bio-backend/model/vo"
 	"net/http"
 
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +13,8 @@ func UserLogin(c *gin.Context) {
 	code := c.Query("code")
 	state := c.Query("state")
 
-	token, err := auth.GetOAuthToken(code, state)
+	state = "echo-bio-react"
+	token, err := casdoorsdk.GetOAuthToken(code, state)
 	data := &vo.TokenVO{}
 
 	if err != nil {
@@ -26,7 +27,8 @@ func UserLogin(c *gin.Context) {
 
 func UserInfo(c *gin.Context) {
 	token := c.GetHeader("token")
-	claims, err := auth.ParseJwtToken(token)
+
+	claims, err := casdoorsdk.ParseJwtToken(token)
 	if err != nil {
 		bindRespWithStatus(c, http.StatusUnauthorized, nil, err)
 		return

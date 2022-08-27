@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
-	"github.com/airren/echo-bio-backend/service"
+	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"path"
@@ -11,6 +13,7 @@ import (
 
 	"github.com/airren/echo-bio-backend/actuator"
 	"github.com/airren/echo-bio-backend/model/req"
+	"github.com/airren/echo-bio-backend/service"
 	"github.com/airren/echo-bio-backend/utils"
 )
 
@@ -28,7 +31,20 @@ func CreateJob(c *gin.Context) {
 
 	algo := c.Query("algorithm")
 
-	file, _ := c.FormFile("file")
+	//file, err := c.FormFile("file")
+	form, _ := c.MultipartForm()
+	files, ok := form.File["file"]
+	if !ok {
+		bindRespWithStatus(c, http.StatusBadRequest, nil, errors.New("file not be empty"))
+		return
+	}
+
+	var file *multipart.FileHeader
+	for _, t := range files {
+		file = t
+		log.Printf(file.Filename)
+
+	}
 
 	ctx := utils.GetCtx(c)
 	// Create folder for user

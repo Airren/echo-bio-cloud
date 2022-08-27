@@ -16,7 +16,9 @@ func TestCreateAlgorithm(t *testing.T) {
 	if err != nil {
 		t.Fatal("invalid file path")
 	}
-	if err := CreateAlgorithm(context.TODO(), file); err != nil {
+
+	ctx := context.WithValue(context.TODO(), "user-id", "123414")
+	if err := CreateAlgorithm(ctx, file); err != nil {
 		t.Fatal("create algorithm failed:", err)
 	}
 	t.Logf("create algorithm success")

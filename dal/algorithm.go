@@ -38,7 +38,7 @@ func QueryAlgorithms(ctx context.Context, algo *model.Algorithm, info *model.Pag
 }
 
 func QueryAlgorithmsByName(ctx context.Context, name string) ([]*model.Algorithm, error) {
-	var algorithms []*model.Algorithm
+	algorithms := make([]*model.Algorithm, 0)
 	query := db.Where("name = ?", name)
 	err := query.Find(&algorithms).Error
 	return algorithms, err
