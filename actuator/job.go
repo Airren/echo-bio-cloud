@@ -7,7 +7,7 @@ import (
 	"github.com/airren/echo-bio-backend/model"
 )
 
-const LocalDataBase = "/tmp/echo-bio-cloud/data"
+const LocalDataBase = "./static"
 
 func StartPaint(job model.Job) (outFile string, err error) {
 

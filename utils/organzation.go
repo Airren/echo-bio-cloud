@@ -9,7 +9,7 @@ import (
 func GetOrgFromCtx(ctx context.Context) string {
 	org := ctx.Value("org")
 	if org == nil || org == "" {
-		return "alarm"
+		return "echo-bio"
 	}
 	return org.(string)
 }

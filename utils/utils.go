@@ -19,10 +19,10 @@ func init() {
 	}
 
 }
-func GenerateId() int64 {
+func GenerateId() uint64 {
 	// Generate a snowflake ID.
 	id := node.Generate()
-	return id.Int64()
+	return uint64(id.Int64())
 }
 
 func SetUserId(ctx context.Context, userId string) context.Context {
@@ -30,9 +30,9 @@ func SetUserId(ctx context.Context, userId string) context.Context {
 }
 
 func GetUserId(ctx context.Context) (string, error) {
-	userId := ctx.Value("user-id").(string)
-	if userId == "" {
-		return "", errors.New("userId not exist")
+	userId := ctx.Value("user-id")
+	if userId != nil {
+		return userId.(string), nil
 	}
-	return userId, nil
+	return "", errors.New("userId not exist")
 }

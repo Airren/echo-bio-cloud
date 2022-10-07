@@ -29,16 +29,16 @@ func GetAlgorithmById(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
-// CreateAlgorithm
+// CreateAlgorithmByFile
 // @Tags Algorithm
 // @Summary create task
 // @Description create task
 // @Accept  json
 // @Produce  json
-// @Router /task/create [post]
+// @Router /task/create_by_file [post]
 // @Success 200 {object} model.Algorithm
 // @Param task body model.Algorithm true "task"
-func CreateAlgorithm(c *gin.Context) {
+func CreateAlgorithmByFile(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
@@ -50,7 +50,18 @@ func CreateAlgorithm(c *gin.Context) {
 		return
 	}
 	ctx := utils.GetCtx(c)
-	err = service.CreateAlgorithm(ctx, f)
+	err = service.CreateAlgorithmByFile(ctx, f)
+	bindResp(c, nil, err)
+}
+
+func CreateAlgorithm(c *gin.Context) {
+	var algoReq req.AlgorithmReq
+	if err := c.Bind(&algoReq); err != nil {
+		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
+		return
+	}
+	ctx := utils.GetCtx(c)
+	err := service.CreateAlgorithm(ctx, algoReq)
 	bindResp(c, nil, err)
 }
 

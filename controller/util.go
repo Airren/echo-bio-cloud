@@ -43,7 +43,7 @@ func bindRespWithStatusAndPageInfo(c *gin.Context, code int, data interface{}, p
 		resVO.ErrMsg = err.Error()
 		//errCode = -1
 		//errMsg = err.Error()
-		//logs.CtxError(c, "org: %v path: %v method: %v, err: %v", getOrgByGinCtx(c), c.Request.URL.Path, c.Request.Method, err)
+		//logs.CtxError(c, "org: %v path: %v method: %v, err: %v", getOrgByGinCtx(c), c.Request.URL.URLPath, c.Request.Method, err)
 		tagKv["is_error"] = "1"
 	}
 
@@ -72,7 +72,7 @@ func bindRespWithStatusAndPageInfo(c *gin.Context, code int, data interface{}, p
 //}
 
 //if proxyResp.ErrMsg != "" {
-//	logs.CtxError(c, "org: %v path: %v method: %v, err: %v", getOrgByGinCtx(c), c.Request.URL.Path, c.Request.Method, proxyResp.ErrMsg)
+//	logs.CtxError(c, "org: %v path: %v method: %v, err: %v", getOrgByGinCtx(c), c.Request.URL.URLPath, c.Request.Method, proxyResp.ErrMsg)
 //	tagKv["is_error"] = "1"
 //}
 //

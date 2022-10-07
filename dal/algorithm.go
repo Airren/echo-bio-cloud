@@ -69,13 +69,13 @@ func QueryAlgorithmByTime(ctx context.Context, startAt time.Time, endAt time.Tim
 	return tasks, err
 }
 
-func CreateParameter(ctx context.Context, param *model.Parameter) (*model.Parameter, error) {
+func CreateParameter(ctx context.Context, param *model.AlgoParameter) (*model.AlgoParameter, error) {
 	err := db.Create(param).Error
 	return param, err
 }
 
-func QueryParameter(ctx context.Context, param *model.Parameter) (params []*model.Parameter, err error) {
-	query := db.Model(&model.Parameter{})
+func QueryParameter(ctx context.Context, param *model.AlgoParameter) (params []*model.AlgoParameter, err error) {
+	query := db.Model(&model.AlgoParameter{})
 	if param.AlgorithmId != 0 {
 		query = query.Where("algorithm_id = ?", param.AlgorithmId)
 	}

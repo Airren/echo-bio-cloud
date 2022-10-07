@@ -1,19 +1,20 @@
 package model
 
 import (
+	"gorm.io/gorm"
 	"time"
 )
 
 type RecordMeta struct {
-	Id        int64      `json:"id" gorm:"primary_key;AUTO_INCREMENT;type:bigint(32)"`
-	AccountId string     `json:"account_id" `
-	Org       string     `json:"org" gorm:"type:varchar(20)"`
-	CreatedAt time.Time  `json:"created_at" `
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at" `
-	UpdatedBy string     `json:"updated_by"`
-	CreatedBy string     `json:"created_by"`
-	DeletedBy string     `json:"deleted_by"`
+	Id        uint64         `json:"id" gorm:"primary_key;AUTO_INCREMENT;type:bigint(32)"`
+	AccountId string         `json:"account_id" `
+	Org       string         `json:"org" gorm:"type:varchar(20)"`
+	CreatedAt time.Time      `json:"created_at" `
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at" `
+	UpdatedBy string         `json:"updated_by"`
+	CreatedBy string         `json:"created_by"`
+	DeletedBy string         `json:"deleted_by"`
 }
 
 const (

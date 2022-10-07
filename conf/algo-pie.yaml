@@ -13,3 +13,30 @@ parameters:
     label: 选择数据表
     required: true
     type: file
+document: |-
+  ### 工具概述
+  
+  用一个以tab符分隔的数据绘制一个饼图，以统计不同类别的占比情况。
+  
+  ### 操作方法
+  
+  1.1选择需要进行分析的数据表，文件应为txt格式，数据表必须包含行头和列头，如图1。数据与数据之间务必用制表符隔开（tab符），不能用空格。
+  
+  ![image-20220122204024962](http://localhost:8080/api/static/data/pie/images/image-20220122204024962.png)
+  
+  1.2作图数据：根据上传的数据表中的数据，选择具体的列进行作图。以demo数据为例，c1-c5 分别绘制饼图，饼图展示x1-x9的占比。
+  
+  1.3合并低占比数据：当数据分类较多时，可以将占比较少的分类进行合并为Others（%）。
+  
+  ### 结果解i读
+  
+  ![image-20220430221725326](http://localhost:8080/api/static/data/pie/images/image-20220122204055700.png)
+  
+  每种颜色代表一种分类，每种颜色大小代表分类的数值占比。
+
+### 参考文献
+
+  [1] Mar&xed, Mej&Xed A E, aLe&xf, et al. Fecal microbiota  imbalance in Mexican children with type 1 diabetes[J]. Scientific  Reports, 2014, 4(1):3814.
+  
+  [2]  Peng J, Narasimhan S, Marchesi J R, et al. Long term effect of gut  microbiota transfer on diabetes development.[J]. Journal of  Autoimmunity, 2014, 53:85.
+

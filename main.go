@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/airren/echo-bio-backend/config"
 	"github.com/airren/echo-bio-backend/dal"
-	middleware2 "github.com/airren/echo-bio-backend/middleware"
+	"github.com/airren/echo-bio-backend/middleware"
 	"github.com/airren/echo-bio-backend/router"
 	"github.com/gin-gonic/gin"
 )
@@ -24,15 +24,16 @@ func main() {
 
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
-	router.StaticAPI(r)
-	router.UserAPI(r)
-
-	r.Use(middleware2.AuthMiddleware)
-
 	r.MaxMultipartMemory = 8 << 20
 
-	router.AlgorithmAPI(r)
-	router.JobAPI(r)
+	r.Use(middleware.CORSMiddleware, middleware.AuthMiddleware)
+	apiV1 := r.Group("api/v1/")
+	router.FileAPI(apiV1)
+	router.StaticAPI(r)
+	router.UserAPI(apiV1)
+
+	router.AlgorithmAPI(apiV1)
+	router.JobAPI(apiV1)
 
 	err := dal.InitMySQL()
 	if err != nil {

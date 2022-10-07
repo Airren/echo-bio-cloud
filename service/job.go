@@ -36,10 +36,7 @@ func CreateJob(c context.Context, req req.JobReq) (err error) {
 
 	job.OutPutFile = outfile
 	_, err = dal.CreateJob(c, &job)
-	if err != nil {
-		return err
-	}
-	return
+	return err
 }
 
 func QueryJob(c context.Context, req req.JobReq) (jobVO []*vo.JobVO, err error) {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+	"strconv"
 	"time"
 
 	"gopkg.in/yaml.v2"
@@ -21,7 +22,7 @@ func QueryAlgorithm(c context.Context, req req.AlgorithmReq) (algoVOs []*vo.Algo
 	algo := AlgorithmToEntity(req)
 	algos, err := dal.QueryAlgorithms(c, algo, &req.PageInfo)
 	for _, a := range algos {
-		params, _ := dal.QueryParameter(c, &model.Parameter{
+		params, _ := dal.QueryParameter(c, &model.AlgoParameter{
 			AlgorithmId: a.Id,
 		})
 		a.Parameters = params
@@ -30,7 +31,41 @@ func QueryAlgorithm(c context.Context, req req.AlgorithmReq) (algoVOs []*vo.Algo
 	return algoVOs, err
 }
 
-func CreateAlgorithm(c context.Context, file multipart.File) error {
+func CreateAlgorithm(c context.Context, algoReq req.AlgorithmReq) error {
+	algo := AlgorithmToEntity(algoReq)
+	OldAlgo, err := dal.QueryAlgorithmsByName(c, algo.Name)
+	if len(OldAlgo) > 0 {
+		return fmt.Errorf("algo <%v> already exist", OldAlgo[0].Name)
+	} else if err != nil {
+		return fmt.Errorf("query old record failed %v", err)
+	}
+	userId, _ := utils.GetUserId(c)
+	algo.RecordMeta = model.RecordMeta{
+		Id:        utils.GenerateId(),
+		AccountId: userId,
+		Org:       "",
+		CreatedAt: time.Now(),
+		CreatedBy: "Echo Bio",
+	}
+
+	id, _ := strconv.ParseInt(algo.Image, 10, 64)
+	file, err := dal.QueryFileById(c, uint64(id))
+	if err != nil {
+		return err
+	}
+	algo.Image = file.URLPath
+	_, err = dal.CreateAlgorithm(c, algo)
+	for _, param := range algo.Parameters {
+		param.Id = utils.GenerateId()
+		param.AlgorithmId = algo.Id
+		if _, err := dal.CreateParameter(c, param); err != nil {
+			return err
+		}
+	}
+	return err
+}
+
+func CreateAlgorithmByFile(c context.Context, file multipart.File) error {
 	algo := &model.Algorithm{}
 	buf := bytes.NewBuffer(nil)
 	if _, err := io.Copy(buf, file); err != nil {
@@ -86,19 +121,22 @@ func UpdateAlgorithm(c context.Context, file multipart.File) error {
 func AlgorithmToEntity(req req.AlgorithmReq) *model.Algorithm {
 	return &model.Algorithm{
 		RecordMeta:  model.RecordMeta{},
-		Name:        "",
+		Name:        req.Name,
 		Label:       req.Label,
-		Image:       "",
-		Description: "",
-		Price:       0,
-		Favourite:   0,
-		//Category:    model.Category{},
+		Image:       req.Image,
+		Description: req.Description,
+		Price:       req.Price,
+		Favourite:   req.Favourite,
+		Parameters:  req.Parameters,
+		Command:     req.Command,
+		Document:    req.Document,
+		GroupId:     req.Group,
 	}
 }
 
 func AlgorithmToVO(algorithm model.Algorithm) *vo.AlgorithmVO {
 	return &vo.AlgorithmVO{
-		RecordMeta:  algorithm.RecordMeta,
+		Id:          fmt.Sprint(algorithm.RecordMeta.Id),
 		Name:        algorithm.Name,
 		Label:       algorithm.Label,
 		Image:       algorithm.Image,
@@ -106,5 +144,8 @@ func AlgorithmToVO(algorithm model.Algorithm) *vo.AlgorithmVO {
 		Price:       algorithm.Price,
 		Favourite:   algorithm.Favourite,
 		Parameters:  algorithm.Parameters,
+		Command:     algorithm.Command,
+		Document:    algorithm.Document,
+		GroupId:     algorithm.GroupId,
 	}
 }

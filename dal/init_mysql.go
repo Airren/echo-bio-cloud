@@ -23,7 +23,9 @@ func InitMySQL() error {
 	db = db.Debug()
 	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Algorithm{})
 	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Job{})
-	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Parameter{})
+	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.AlgoParameter{})
+	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.File{})
+	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.AlgoGroup{})
 	if err != nil {
 		return err
 	}
