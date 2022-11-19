@@ -7,7 +7,8 @@ require (
 	github.com/casdoor/casdoor-go-sdk v0.9.0
 	github.com/gin-gonic/gin v1.7.4
 	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v2 v2.2.8
+	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.2.3
 	gorm.io/gorm v1.22.5
 

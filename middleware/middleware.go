@@ -27,7 +27,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	claims, err := casdoorsdk.ParseJwtToken(token)
 	if err != nil {
-		log.Println("parse token failed")
+		log.Println("parse token failed:", err)
 		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}

@@ -1,11 +1,12 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/airren/echo-bio-backend/config"
 	"github.com/airren/echo-bio-backend/dal"
 	"github.com/airren/echo-bio-backend/middleware"
 	"github.com/airren/echo-bio-backend/router"
-	"github.com/gin-gonic/gin"
 )
 
 // @title Break Jail
@@ -19,8 +20,8 @@ import (
 // @BasePath /
 func main() {
 
+	config.InitConfig()
 	config.AuthInit()
-	//r := gin.Default()
 
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
