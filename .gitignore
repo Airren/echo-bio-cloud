@@ -3,5 +3,6 @@
 static
 data
 vendor
-./idea
+bin
+.idea
 
