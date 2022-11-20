@@ -1,7 +1,6 @@
 pipeline {
   environment {
     registry = "airren/echo-bio-cloud"
-    registryCredential = ‘dockerhub’
   }
   agent any
   stages {
@@ -17,16 +16,6 @@ pipeline {
         }
       }
     }
-//       stage('Deploy Image') {
-//           steps{
-//             script {
-//               docker.withRegistry( '', registryCredential ) {
-//                 dockerImage.push()
-//               }
-//             }
-//           }
-//         }
-//
         stage('Docker Push') {
             	agent any
               steps {
