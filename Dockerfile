@@ -7,4 +7,4 @@ RUN go build -o ./bin/echo-bio-cloud main.go
 
 FROM alpine
 COPY --from=builder /echo-bio-cloud/bin/echo-bio-cloud /echo-bio-cloud
-ENTRYPOINT "/metric-exporter"
+ENTRYPOINT "/echo-bio-cloud"
