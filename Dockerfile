@@ -7,4 +7,5 @@ RUN go build -o ./bin/echo-bio-cloud main.go
 
 FROM alpine
 COPY --from=builder /echo-bio-cloud/bin/echo-bio-cloud /echo-bio-cloud
+COPY --from=builder /echo-bio-cloud/conf /conf
 ENTRYPOINT "/echo-bio-cloud"
