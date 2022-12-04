@@ -2,11 +2,12 @@ package controller
 
 import (
 	"fmt"
-	"github.com/airren/echo-bio-backend/model/vo"
 	"net/http"
 
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/gin-gonic/gin"
+
+	"github.com/airren/echo-bio-backend/model/vo"
 )
 
 func UserLogin(c *gin.Context) {
