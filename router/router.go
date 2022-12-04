@@ -1,15 +1,18 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 
 	"github.com/airren/echo-bio-backend/controller"
 )
 
-func ApiV_1(r *gin.Engine) {
+func HealthCheck(r *gin.RouterGroup) {
+	r.GET("ping", func(context *gin.Context) {
+		context.String(http.StatusOK, "pong")
+	})
 }
-
 func StaticAPI(r *gin.Engine) {
 	static := r.Group("api/static")
 	static.StaticFS("/data", http.Dir("./static"))

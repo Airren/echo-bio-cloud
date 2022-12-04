@@ -14,6 +14,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	if strings.HasPrefix(c.Request.URL.String(), "/api/v1/file/upload") ||
 		strings.HasPrefix(c.Request.URL.String(), "/api/static") ||
+		strings.HasPrefix(c.Request.URL.String(), "/api/v1/ping") ||
 		strings.HasPrefix(c.Request.URL.String(), "/api/v1/user/login") {
 		c.Next()
 		return

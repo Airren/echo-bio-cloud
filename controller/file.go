@@ -62,7 +62,7 @@ func UploadFile(c *gin.Context) {
 		bindRespWithStatus(c, http.StatusInternalServerError, nil, err)
 		return
 	}
-	url := "http://localhost:8080/api/static/data/"
+	url := "http://www.echo-bio.cn/api/static/data/"
 	fileItem.URLPath = fmt.Sprintf("%v%v", url, newFileName)
 
 	f, err := service.UploadFile(ctx, fileItem)

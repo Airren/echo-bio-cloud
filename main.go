@@ -29,6 +29,7 @@ func main() {
 
 	r.Use(middleware.CORSMiddleware, middleware.AuthMiddleware)
 	apiV1 := r.Group("api/v1/")
+	router.HealthCheck(apiV1)
 	router.FileAPI(apiV1)
 	router.StaticAPI(r)
 	router.UserAPI(apiV1)
@@ -42,7 +43,6 @@ func main() {
 	}
 
 	//r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.ApiV_1(r)
 	_ = r.Run()
 
 }
