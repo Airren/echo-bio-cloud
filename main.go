@@ -5,19 +5,23 @@ import (
 
 	"github.com/airren/echo-bio-backend/config"
 	"github.com/airren/echo-bio-backend/dal"
+	"github.com/airren/echo-bio-backend/docs"
 	"github.com/airren/echo-bio-backend/middleware"
 	"github.com/airren/echo-bio-backend/router"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	 swaggerfiles "github.com/swaggo/files"
 )
 
-// @title Break Jail
+// @title Echo-Bio-Cloud
 // @version 0.0.1
 // @description Order Manager
-// @contact.name Airren
-// @contact.email renqiang.luffy@bytedance.com
+// @contact.name Airren, Peto
+// @contact.email renqiqiang@outlook.com, peto1
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
-// @host localhost:8080
+// @host http://echo-bio.cn
 // @BasePath /
+//go:generate swag init
 func main() {
 
 	config.InitConfig()
@@ -42,7 +46,8 @@ func main() {
 		panic(err)
 	}
 
-	//r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	docs.SwaggerInfo.BasePath = "/api/v1"
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	_ = r.Run()
 
 }

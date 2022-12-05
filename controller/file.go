@@ -25,7 +25,7 @@ import (
 // @Accept  json
 // @Produce  json
 // @Router /task/update [put]
-// @Success 200 string
+// @Success 200 {string} Helooww
 // @Param task body model.Job true "task"
 func UploadFile(c *gin.Context) {
 	fileItem := model.File{}

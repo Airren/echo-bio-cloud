@@ -1,0 +1,256 @@
+basePath: /
+definitions:
+  model.AlgoParameter:
+    properties:
+      account_id:
+        type: string
+      algorithmId:
+        type: integer
+      created_at:
+        type: string
+      created_by:
+        type: string
+      deleted_at:
+        type: string
+      deleted_by:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      label:
+        type: string
+      name:
+        type: string
+      org:
+        type: string
+      required:
+        type: boolean
+      type:
+        $ref: '#/definitions/model.ParamType'
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+      value_list:
+        type: string
+    type: object
+  model.Algorithm:
+    properties:
+      account_id:
+        type: string
+      command:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      deleted_at:
+        type: string
+      deleted_by:
+        type: string
+      description:
+        type: string
+      document:
+        type: string
+      favourite:
+        type: integer
+      group_id:
+        type: string
+      id:
+        type: integer
+      image:
+        type: string
+      label:
+        type: string
+      name:
+        type: string
+      org:
+        type: string
+      parameters:
+        items:
+          $ref: '#/definitions/model.AlgoParameter'
+        type: array
+      price:
+        type: integer
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  model.Job:
+    properties:
+      account_id:
+        type: string
+      algorithm:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      deleted_at:
+        type: string
+      deleted_by:
+        type: string
+      id:
+        type: integer
+      inputFile:
+        type: string
+      org:
+        type: string
+      outPutFile:
+        type: string
+      parameter:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  model.ParamType:
+    enum:
+    - string
+    - file
+    - radio
+    - select
+    type: string
+    x-enum-varnames:
+    - ParamString
+    - ParamFile
+    - ParamRadio
+    - ParamSelect
+  req.AlgorithmReq:
+    properties:
+      asc:
+        type: boolean
+      command:
+        type: string
+      description:
+        type: string
+      document:
+        type: string
+      favourite:
+        type: integer
+      group:
+        type: string
+      image:
+        type: string
+      label:
+        type: string
+      name:
+        type: string
+      order_by:
+        type: string
+      page:
+        example: 1
+        type: integer
+      page_size:
+        example: 10
+        type: integer
+      parameters:
+        items:
+          $ref: '#/definitions/model.AlgoParameter'
+        type: array
+      price:
+        type: integer
+      total:
+        type: integer
+    type: object
+host: http://echo-bio.cn
+info:
+  contact:
+    email: renqiqiang@outlook.com, peto1
+    name: Airren, Peto
+  description: Order Manager
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Echo-Bio-Cloud
+  version: 0.0.1
+paths:
+  /task/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get details of task by id
+      parameters:
+      - description: task id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Algorithm'
+      summary: get task by id
+      tags:
+      - Algorithm
+  /task/create_by_file:
+    post:
+      consumes:
+      - application/json
+      description: create task
+      parameters:
+      - description: task
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/model.Algorithm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Algorithm'
+      summary: create task
+      tags:
+      - Algorithm
+  /task/list:
+    post:
+      consumes:
+      - application/json
+      description: query task
+      parameters:
+      - description: task req
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/req.AlgorithmReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Algorithm'
+            type: array
+      summary: query task
+      tags:
+      - Algorithm
+  /task/update:
+    put:
+      consumes:
+      - application/json
+      description: update task
+      parameters:
+      - description: task
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/model.Job'
+      produces:
+      - application/json
+      responses: {}
+      summary: update task
+      tags:
+      - Job
+swagger: "2.0"
