@@ -23,6 +23,164 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/file/download/{id}": {
+            "post": {
+                "description": "Download by file ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Download a file",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "octet-stream",
+                        "description": "FILE ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vo.BaseVO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/vo.BaseVO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/vo.BaseVO"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/list": {
+            "get": {
+                "description": "List files by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "List files",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vo.BaseVO"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/listByIds": {
+            "get": {
+                "description": "List files by file ids",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "List files",
+                "parameters": [
+                    {
+                        "description": "FILE ID LIST",
+                        "name": "ids",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.ListFileByIdsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vo.BaseVO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/vo.BaseVO"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/update/": {
+            "put": {
+                "description": "Upload a file",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Upload a file",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "FILE",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vo.FileVO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/vo.BaseVO"
+                        }
+                    }
+                }
+            }
+        },
         "/task/create_by_file": {
             "post": {
                 "description": "create task",
@@ -118,7 +276,14 @@ const docTemplate = `{
                         }
                     }
                 ],
-                "responses": {}
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/task/{id}": {
@@ -317,6 +482,28 @@ const docTemplate = `{
                 }
             }
         },
+        "model.PageInfo": {
+            "type": "object",
+            "properties": {
+                "asc": {
+                    "type": "boolean"
+                },
+                "order_by": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "page_size": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.ParamType": {
             "type": "string",
             "enum": [
@@ -386,6 +573,49 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        },
+        "req.ListFileByIdsReq": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "vo.BaseVO": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error_code": {
+                    "type": "integer"
+                },
+                "error_message": {
+                    "type": "string"
+                },
+                "page_info": {
+                    "$ref": "#/definitions/model.PageInfo"
+                }
+            }
+        },
+        "vo.FileVO": {
+            "type": "object",
+            "properties": {
+                "URLPath": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
         }
     }
 }`
@@ -394,7 +624,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.0.1",
 	Host:             "http://echo-bio.cn",
-	BasePath:         "/",
+	BasePath:         "/api/v1/",
 	Schemes:          []string{},
 	Title:            "Echo-Bio-Cloud",
 	Description:      "Order Manager",

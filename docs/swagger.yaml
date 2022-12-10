@@ -1,4 +1,4 @@
-basePath: /
+basePath: /api/v1/
 definitions:
   model.AlgoParameter:
     properties:
@@ -107,6 +107,21 @@ definitions:
       updated_by:
         type: string
     type: object
+  model.PageInfo:
+    properties:
+      asc:
+        type: boolean
+      order_by:
+        type: string
+      page:
+        example: 1
+        type: integer
+      page_size:
+        example: 10
+        type: integer
+      total:
+        type: integer
+    type: object
   model.ParamType:
     enum:
     - string
@@ -156,6 +171,34 @@ definitions:
       total:
         type: integer
     type: object
+  req.ListFileByIdsReq:
+    properties:
+      ids:
+        items:
+          type: integer
+        type: array
+    type: object
+  vo.BaseVO:
+    properties:
+      data: {}
+      error_code:
+        type: integer
+      error_message:
+        type: string
+      page_info:
+        $ref: '#/definitions/model.PageInfo'
+    type: object
+  vo.FileVO:
+    properties:
+      URLPath:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
 host: http://echo-bio.cn
 info:
   contact:
@@ -168,6 +211,110 @@ info:
   title: Echo-Bio-Cloud
   version: 0.0.1
 paths:
+  /file/download/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Download by file ID
+      parameters:
+      - description: FILE ID
+        format: octet-stream
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.BaseVO'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/vo.BaseVO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/vo.BaseVO'
+      summary: Download a file
+      tags:
+      - file
+  /file/list:
+    get:
+      consumes:
+      - application/json
+      description: List files by user id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.BaseVO'
+      summary: List files
+      tags:
+      - file
+  /file/listByIds:
+    get:
+      consumes:
+      - application/json
+      description: List files by file ids
+      parameters:
+      - description: FILE ID LIST
+        in: body
+        name: ids
+        required: true
+        schema:
+          $ref: '#/definitions/req.ListFileByIdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.BaseVO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/vo.BaseVO'
+      summary: List files
+      tags:
+      - file
+  /file/update/:
+    put:
+      consumes:
+      - application/json
+      description: Upload a file
+      parameters:
+      - description: FILE
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.FileVO'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/vo.BaseVO'
+      summary: Upload a file
+      tags:
+      - file
   /task/{id}:
     get:
       consumes:
@@ -249,7 +396,11 @@ paths:
           $ref: '#/definitions/model.Job'
       produces:
       - application/json
-      responses: {}
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
       summary: update task
       tags:
       - Job

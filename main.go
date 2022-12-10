@@ -7,9 +7,10 @@ import (
 	"github.com/airren/echo-bio-backend/dal"
 	"github.com/airren/echo-bio-backend/docs"
 	"github.com/airren/echo-bio-backend/middleware"
+	"github.com/airren/echo-bio-backend/minio"
 	"github.com/airren/echo-bio-backend/router"
+	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	 swaggerfiles "github.com/swaggo/files"
 )
 
 // @title Echo-Bio-Cloud
@@ -20,12 +21,13 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host http://echo-bio.cn
-// @BasePath /
+// @BasePath /api/v1/
 //go:generate swag init
 func main() {
 
 	config.InitConfig()
 	config.AuthInit()
+	config.GetLogger()
 
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
@@ -45,9 +47,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	err = minio.InitMinio()
+	if err != nil {
+		panic(err)
+	}
 
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	_ = r.Run()
-
 }

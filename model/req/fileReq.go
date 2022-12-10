@@ -6,3 +6,7 @@ type FileReq struct {
 	Description string `json:"description" gorm:"type:varchar(256);"`
 	URLPath     string `json:"URLPath" gorm:"type:varchar(256); not null"`
 }
+
+type ListFileByIdsReq struct {
+	Ids []uint64 `json:"ids"`
+}
