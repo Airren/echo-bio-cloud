@@ -11,6 +11,7 @@ import (
 type Config struct {
 	MysqlURI    string      `yaml:"mysqlURI"`
 	CasdoorConf CasdoorConf `yaml:"casdoorConf"`
+	MinioConf   MinioConf   `yaml:"minioConf"`
 }
 
 type CasdoorConf struct {
@@ -20,6 +21,13 @@ type CasdoorConf struct {
 	JwtSecret           string `yaml:"jwtSecret"`
 	CasdoorOrganization string `yaml:"casdoorOrganization"`
 	CasdoorApplication  string `yaml:"casdoorApplication"`
+}
+
+type MinioConf struct {
+	Endpoint     string `yaml:"endpoint"`
+	AccessKey    string `yaml:"accessKey"`
+	AccessSecret string `yaml:"accessSecret"`
+	UseSSL       bool   `yaml:"useSSL"`
 }
 
 var Conf *Config
