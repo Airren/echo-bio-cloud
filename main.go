@@ -8,6 +8,7 @@ import (
 	"github.com/airren/echo-bio-backend/docs"
 	"github.com/airren/echo-bio-backend/middleware"
 	"github.com/airren/echo-bio-backend/router"
+
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -21,7 +22,7 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host http://echo-bio.cn
 // @BasePath /
-//
+
 //go:generate swag init
 func main() {
 
