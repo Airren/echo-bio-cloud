@@ -50,6 +50,10 @@ func bindRespWithStatusAndPageInfo(c *gin.Context, code int, data interface{}, p
 	//helpers.ApiThroughput.Inc(getCtxByGinCtx(c), tagKv)
 
 	resVO.Data = data
+	resVO.PageInfo = pageInfo
+	if resVO.ErrCode == 0 {
+		resVO.Success = true
+	}
 
 	//data.ErrCode = errCode
 	//data.PageInfo = vo.NewRespPageInfo(pageInfo)

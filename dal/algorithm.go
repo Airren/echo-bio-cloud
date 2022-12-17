@@ -2,6 +2,7 @@ package dal
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/airren/echo-bio-backend/model"
@@ -22,17 +23,19 @@ func UpdateAlgorithm(ctx context.Context, task *model.Algorithm) (*model.Algorit
 	return task, err
 }
 
-func QueryAlgorithms(ctx context.Context, algo *model.Algorithm, info *model.PageInfo) (
+func ListAlgorithms(ctx context.Context, algo *model.Algorithm, info *model.PageInfo) (
 	algorithms []*model.Algorithm, err error) {
 	query := db.Model(&model.Algorithm{})
-	query = queryByPage(query, info)
+
 	if algo.Label != "" {
-		query = db.Where("label = ?", algo.Label)
+		query = query.Where("label like ?", fmt.Sprintf("%%%s%%", algo.Label))
 	}
+	if info != nil {
+		query.Count(&info.Total)
+	}
+	query = queryByPage(query, info)
+
 	err = query.Find(&algorithms).Error
-	//if info != nil {
-	//	query.Count(info.Total)
-	//}
 
 	return algorithms, err
 }

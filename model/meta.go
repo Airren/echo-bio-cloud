@@ -25,7 +25,7 @@ const (
 type PageInfo struct {
 	Page     int    `json:"page" form:"page" example:"1"`
 	PageSize int    `json:"page_size" form:"page_size" example:"10"`
-	Total    *int64 `json:"total" form:"-"`
+	Total    int64  `json:"total" form:"-"`
 	OrderBy  string `json:"order_by" form:"-"`
 	Asc      bool   `json:"asc" form:"-"`
 }
