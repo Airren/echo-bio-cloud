@@ -18,9 +18,9 @@ import (
 	"github.com/airren/echo-bio-backend/utils"
 )
 
-func QueryAlgorithm(c context.Context, req req.AlgorithmReq) (algoVOs []*vo.AlgorithmVO, err error) {
+func QueryAlgorithm(c context.Context, req req.AlgorithmReq) (algoVOs []*vo.AlgorithmVO, pageInfo *model.PageInfo, err error) {
 	algo := AlgorithmToEntity(req)
-	algos, err := dal.QueryAlgorithms(c, algo, &req.PageInfo)
+	algos, err := dal.ListAlgorithms(c, algo, &req.PageInfo)
 	for _, a := range algos {
 		params, _ := dal.QueryParameter(c, &model.AlgoParameter{
 			AlgorithmId: a.Id,
@@ -28,7 +28,7 @@ func QueryAlgorithm(c context.Context, req req.AlgorithmReq) (algoVOs []*vo.Algo
 		a.Parameters = params
 		algoVOs = append(algoVOs, AlgorithmToVO(*a))
 	}
-	return algoVOs, err
+	return algoVOs, &req.PageInfo, err
 }
 
 func CreateAlgorithm(c context.Context, algoReq req.AlgorithmReq) error {
@@ -136,6 +136,7 @@ func AlgorithmToEntity(req req.AlgorithmReq) *model.Algorithm {
 
 func AlgorithmToVO(algorithm model.Algorithm) *vo.AlgorithmVO {
 	return &vo.AlgorithmVO{
+		RecordMeta:  RecordMetaToVO(algorithm.RecordMeta),
 		Id:          fmt.Sprint(algorithm.RecordMeta.Id),
 		Name:        algorithm.Name,
 		Label:       algorithm.Label,

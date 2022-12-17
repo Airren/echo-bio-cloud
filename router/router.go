@@ -29,7 +29,7 @@ func AlgorithmAPI(r *gin.RouterGroup) {
 	algo := r.Group("algorithm")
 	algo.POST("/create", controller.CreateAlgorithm)
 	algo.PUT("/update", controller.UpdateAlgorithm)
-	algo.GET("/list", controller.QueryAlgorithm)
+	algo.POST("/list", controller.QueryAlgorithm)
 
 	group := algo.Group("group")
 	group.POST("/create", controller.CreateAlgoGroup)

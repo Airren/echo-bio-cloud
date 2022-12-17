@@ -25,10 +25,11 @@ type VO interface {
 }
 
 type BaseVO struct {
-	ErrCode  int             `json:"error_code"`
-	ErrMsg   string          `json:"error_message"`
-	PageInfo *model.PageInfo `json:"page_info,omitempty"`
-	Data     interface{}     `json:"data"`
+	ErrCode int    `json:"error_code"`
+	ErrMsg  string `json:"error_message"`
+	*model.PageInfo
+	Data    interface{} `json:"data"`
+	Success bool        `json:"success"`
 }
 
 func (b *BaseVO) SetErrCode() {

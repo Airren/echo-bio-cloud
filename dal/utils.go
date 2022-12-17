@@ -1,6 +1,7 @@
 package dal
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 
 	"github.com/airren/echo-bio-backend/model"
@@ -8,7 +9,12 @@ import (
 
 func queryByPage(db *gorm.DB, info *model.PageInfo) *gorm.DB {
 	if info != nil {
-		return db.Offset(info.Page * info.PageSize).Limit(info.PageSize)
+		db = db.Offset((info.Page - 1) * info.PageSize).Limit(info.PageSize)
+	}
+	if info.OrderBy != "" && !info.Asc {
+		db = db.Order(fmt.Sprintf("%v DESC", info.OrderBy))
+	} else if info.OrderBy != "" {
+		db = db.Order(fmt.Sprintf("%v ASC", info.OrderBy))
 	}
 	return db
 }

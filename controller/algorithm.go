@@ -109,7 +109,7 @@ func QueryAlgorithm(c *gin.Context) {
 	}
 	ctx := utils.GetCtx(c)
 
-	algorithms, err := service.QueryAlgorithm(ctx, algoReq)
-	bindRespWithPageInfo(c, algorithms, nil, err)
+	algorithms, pageInfo, err := service.QueryAlgorithm(ctx, algoReq)
+	bindRespWithPageInfo(c, algorithms, pageInfo, err)
 
 }
