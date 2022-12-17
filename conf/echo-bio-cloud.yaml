@@ -1,9 +1,9 @@
 # mysql URI
-mysqlURI: "root:1q2w3e4r%T@tcp(www.echo-bio.cn:3306)/echo_bio?charset=utf8&parseTime=True&loc=Local"
+mysqlURI: "root:1q2w3e4r%T@tcp(docker.lan:3306)/echo_bio?charset=utf8&parseTime=True&loc=Local"
 
 # Casdoor configuration
 casdoorConf:
-  endpoint: "http://www.echo-bio.cn:8001"
+  endpoint: "http://docker.lan:8001"
   clientId: "aee24e6d160573b51f9d"
   clientSecret: "cd1ea46c6a2a9711320989520eb278aea57f7521"
   jwtSecret: |-
