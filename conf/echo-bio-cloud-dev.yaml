@@ -1,0 +1,40 @@
+# mysql URI
+mysqlURI: "root:1q2w3e4r%T@tcp(www.echo-bio.cn:3306)/echo_bio?charset=utf8&parseTime=True&loc=Local"
+
+# Casdoor configuration
+casdoorConf:
+  endpoint: "http://www.echo-bio.cn:8001"
+  clientId: "aee24e6d160573b51f9d"
+  clientSecret: "cd1ea46c6a2a9711320989520eb278aea57f7521"
+  jwtSecret: |-
+    -----BEGIN CERTIFICATE-----
+    MIIE3TCCAsWgAwIBAgIDAeJAMA0GCSqGSIb3DQEBCwUAMCgxDjAMBgNVBAoTBWFk
+    bWluMRYwFAYDVQQDEw1jZXJ0LWJ1aWx0LWluMB4XDTIyMTEzMDE1NDg0OVoXDTQy
+    MTEzMDE1NDg0OVowKDEOMAwGA1UEChMFYWRtaW4xFjAUBgNVBAMTDWNlcnQtYnVp
+    bHQtaW4wggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDKj6qfSyykkvUK
+    N/IWqYO7fV5VJa62OmilpctUFG2ZnzP4JRMyqU1dvEZtrZ8rQMqeF51ilCpYkAZP
+    CHV17Zd5NLVuvPtmBfy9j+65brlznhIlKDG+9bsRZ1W4IGRafAT8gyqJ1RrLfh7L
+    BO7DcqGhfl5nMNIUGI21+/wFLBbDgG59JiDeIlMw+OPMDB4bMyrRzS42k+5i3e9F
+    9vjfZqnni/TIUBrIRPjiHTDfqliOunyYDBSpA7xy0hL2ShRj65cuyfMGYqrTnT67
+    SENHmNwjIXZjeE+vP60jCi1LqFpEmVvdTDkubqaft2q7tPE/WPMn0XFOkdgclH/f
+    NFDqyLpiX/R+F3wdFutHJ4K+D1Ihzw6YLgdXE0iOXwVqzEjK6pJhdeaOnCzPZzgi
+    iKHoTAnnGCX93tYLu2rEnC+EJs4Pk+qxirX8dtB5/o7l9t2obAkqd2f4TgPh2z7K
+    /9fbo285ikDhDAP8l6W6iYNB1YPnkvizaVFXNu9XueColDbSiHFYzG3OIUuGWrtV
+    8cL9039QWds7rxWmJ5T5mDDxaJKFIH1qrJR+evPgkIZqsm55GG+krJz/spSJjyGs
+    xu05kK7e7fYKrouG0In6dAPa9p2VmNotS2vv+Ws8AOz+efdv/2lES+ssbM+jJzuB
+    Mw1TyXit2qJO2fZyp+xH+f8M/41HyQIDAQABoxAwDjAMBgNVHRMBAf8EAjAAMA0G
+    CSqGSIb3DQEBCwUAA4ICAQATBKxFI/Zfe4Cec5KZn11qJoTtAZ5z4qXu/cA2yMSH
+    y8Go35foJdezRW9SG8QdrVj7UdMc95wFzNlhRQMYRn58dCx3WhpMpLwaV4YNTku1
+    FkQavezmBC8YT/eLEWOe6kI2d4+BZGtdi+6JVcQg8QiPxg5jk6MS4UPvBu3f0Iw3
+    zNFXpf2qFnK+xH1XcXf2K0oKytBlGoZBKsV2UvGL8WyI39/kR/L1yY95xWgykx/+
+    y/xRPJkWyEoabQ+WJow4ic+iZFIENFXmu2gQ+ZeU3eqkRaEnj036Lq64hG6nnYbV
+    hCuJFCgCQCkLEpdDonLF7mdBuSqJXzitPQpPU7HKrT8Soge+zyU3VFPhmLjwOlKv
+    bzlM2Bn457kGBGGUS0grePX6Oxd3a1Bl8MMGaeU1abBZUnqDRajSLDDIivnQjQHE
+    /FqyfW+cM93G9AgsoO3G8jgwvGn5RroY9m1VKjbtbevBX91upq7Dtfn7OvjHd8Pr
+    sf0SowufFLY/KVAtjMH5ApaWhFgSwPhCsyBzW/J/Z2kBOq90T0dgwfwrP/yzu4Tu
+    JuyJ6qwTJ2ZtXQliduaLjAhIuYva2gcnX+sjJzBVvW8ja3/FwhY+p6uZZYGGpsat
+    fJH2zzU+ik04uPT0aWrJPEcBAGik3F1zQPDVgokGtDMc9TJCeeeR1blraadjhBvk
+    ZA==
+    -----END CERTIFICATE-----
+  casdoorOrganization: "echo-bio"
+  casdoorApplication: "echo-bio-react"
