@@ -532,28 +532,6 @@ const docTemplate = `{
                 }
             }
         },
-        "model.PageInfo": {
-            "type": "object",
-            "properties": {
-                "asc": {
-                    "type": "boolean"
-                },
-                "order_by": {
-                    "type": "string"
-                },
-                "page": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "page_size": {
-                    "type": "integer",
-                    "example": 10
-                },
-                "total": {
-                    "type": "integer"
-                }
-            }
-        },
         "model.ParamType": {
             "type": "string",
             "enum": [
@@ -638,6 +616,9 @@ const docTemplate = `{
         "vo.BaseVO": {
             "type": "object",
             "properties": {
+                "asc": {
+                    "type": "boolean"
+                },
                 "data": {},
                 "error_code": {
                     "type": "integer"
@@ -645,8 +626,22 @@ const docTemplate = `{
                 "error_message": {
                     "type": "string"
                 },
-                "page_info": {
-                    "$ref": "#/definitions/model.PageInfo"
+                "order_by": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "page_size": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "success": {
+                    "type": "boolean"
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         },

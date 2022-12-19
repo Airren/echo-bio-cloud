@@ -136,21 +136,6 @@ definitions:
       updated_by:
         type: string
     type: object
-  model.PageInfo:
-    properties:
-      asc:
-        type: boolean
-      order_by:
-        type: string
-      page:
-        example: 1
-        type: integer
-      page_size:
-        example: 10
-        type: integer
-      total:
-        type: integer
-    type: object
   model.ParamType:
     enum:
     - string
@@ -209,13 +194,25 @@ definitions:
     type: object
   vo.BaseVO:
     properties:
+      asc:
+        type: boolean
       data: {}
       error_code:
         type: integer
       error_message:
         type: string
-      page_info:
-        $ref: '#/definitions/model.PageInfo'
+      order_by:
+        type: string
+      page:
+        example: 1
+        type: integer
+      page_size:
+        example: 10
+        type: integer
+      success:
+        type: boolean
+      total:
+        type: integer
     type: object
   vo.FileVO:
     properties:

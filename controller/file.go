@@ -109,7 +109,7 @@ func ListFileInfo(c *gin.Context) {
 	ctx := utils.GetCtx(c)
 	files, err := dal.QueryFileByUserId(ctx, &pageInfo)
 	var total int64 = int64(len(files))
-	pageInfo.Total = &total
+	pageInfo.Total = total
 	bindRespWithPageInfo(c, files, &pageInfo, err)
 }
 
