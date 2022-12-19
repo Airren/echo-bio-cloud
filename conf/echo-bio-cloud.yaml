@@ -38,3 +38,10 @@ casdoorConf:
     -----END CERTIFICATE-----
   casdoorOrganization: "echo-bio"
   casdoorApplication: "echo-bio-react"
+
+
+minioConf:
+  endpoint: "docker.lan:9000"
+  AccessKey: "mp3MS010E1YjGkFZ"
+  AccessSecret: "0iXlr13d4VgamQzQUt4cBPFFx8pljWkN"
+  UseSSL: false

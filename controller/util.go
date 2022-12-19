@@ -58,6 +58,7 @@ func bindRespWithStatusAndPageInfo(c *gin.Context, code int, data interface{}, p
 	//data.ErrCode = errCode
 	//data.PageInfo = vo.NewRespPageInfo(pageInfo)
 	//data.ErrMsg = errMsg
+	resVO.PageInfo = pageInfo
 	c.JSON(code, resVO)
 }
 

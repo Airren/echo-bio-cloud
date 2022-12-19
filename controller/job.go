@@ -24,6 +24,7 @@ import (
 // @Accept  json
 // @Produce  json
 // @Router /task/update [put]
+// @Success 200 {string} vo.BaseVO
 // @Param task body model.Job true "task"
 func CreateJob(c *gin.Context) {
 	var jobReq req.JobReq

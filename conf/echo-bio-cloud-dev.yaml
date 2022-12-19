@@ -38,3 +38,9 @@ casdoorConf:
     -----END CERTIFICATE-----
   casdoorOrganization: "echo-bio"
   casdoorApplication: "echo-bio-react"
+
+minioConf:
+  endpoint: "echo-bio.cn:9000"
+  AccessKey: "9XJoxslHoeflnS9S"
+  AccessSecret: "0DVKoOwiDaK5QdsyVRvzMDY4EmFFegFj"
+  UseSSL: false
