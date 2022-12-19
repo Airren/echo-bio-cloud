@@ -40,7 +40,7 @@ casdoorConf:
   casdoorApplication: "echo-bio-react"
 
 minioConf:
-  endpoint: "127.0.0.1:9000"
+  endpoint: "echo-bio.cn:9000"
   AccessKey: "9XJoxslHoeflnS9S"
   AccessSecret: "0DVKoOwiDaK5QdsyVRvzMDY4EmFFegFj"
   UseSSL: false

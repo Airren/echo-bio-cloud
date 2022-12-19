@@ -41,7 +41,7 @@ casdoorConf:
 
 
 minioConf:
-  endpoint: "127.0.0.1:9000"
-  AccessKey: "9XJoxslHoeflnS9S"
-  AccessSecret: "0DVKoOwiDaK5QdsyVRvzMDY4EmFFegFj"
+  endpoint: "docker.lan:9000"
+  AccessKey: "mp3MS010E1YjGkFZ"
+  AccessSecret: "0iXlr13d4VgamQzQUt4cBPFFx8pljWkN"
   UseSSL: false

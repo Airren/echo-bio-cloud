@@ -49,6 +49,6 @@ func FileAPI(r *gin.RouterGroup) {
 	file.PUT("/update", controller.UpdateFile)
 	file.GET("/download/:id", controller.DownloadFileById)
 	file.POST("/upload", controller.UploadFile)
-	file.GET("/list", controller.ListFileInfoByUserId)
+	file.POST("/list", controller.ListFileInfo)
 	file.POST("/listByIds", controller.ListFileInfoByIds)
 }

@@ -56,7 +56,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/vo.BaseVO"
                         }
                     },
                     "404": {
@@ -91,7 +91,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/vo.BaseVO"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.File"
+                            }
                         }
                     }
                 }
@@ -125,7 +128,10 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/vo.BaseVO"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.File"
+                            }
                         }
                     },
                     "400": {
@@ -169,7 +175,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/vo.BaseVO"
                         }
                     },
                     "500": {
@@ -429,6 +435,50 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.File": {
+            "type": "object",
+            "properties": {
+                "MD5": {
+                    "type": "string"
+                },
+                "URLPath": {
+                    "type": "string"
+                },
+                "account_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "deleted_by": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "org": {
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"

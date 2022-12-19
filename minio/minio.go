@@ -3,10 +3,9 @@ package minio
 import (
 	"context"
 	"fmt"
-	"mime/multipart"
-
 	"github.com/minio/minio-go/v7"
 	"go.uber.org/zap"
+	"mime/multipart"
 
 	"github.com/airren/echo-bio-backend/global"
 	"github.com/airren/echo-bio-backend/model"
@@ -22,7 +21,7 @@ func UploadFileToMinio(ctx context.Context, fileInfo *model.File, file *multipar
 	}
 	defer src.Close()
 	//use org as bucketName
-	_, err = global.MinioClient.PutObject(ctx, fileInfo.Org, fileInfo.Name, src, file.Size, minio.PutObjectOptions{ContentType: "contentType"})
+	_, err = global.MinioClient.PutObject(ctx, fileInfo.Org, fileInfo.MD5, src, file.Size, minio.PutObjectOptions{ContentType: "contentType"})
 	if err != nil {
 		global.Logger.Error("Upload fileInfo failed", zap.Error(err))
 		return nil, err
@@ -76,8 +75,4 @@ func CreateBucket(ctx context.Context, bucketName string) error {
 		global.Logger.Info(fmt.Sprintf("Successfully created %s\n", bucketName))
 	}
 	return err
-}
-
-func GetMinioFileName(ctx context.Context, fileId uint64, fileName string) string {
-	return fmt.Sprintf("%v-%v", fileId, fileName)
 }

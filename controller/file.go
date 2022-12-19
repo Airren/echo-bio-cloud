@@ -10,7 +10,6 @@ import (
 
 	"github.com/airren/echo-bio-backend/dal"
 	"github.com/airren/echo-bio-backend/global"
-	"github.com/airren/echo-bio-backend/minio"
 	"github.com/airren/echo-bio-backend/model"
 	"github.com/airren/echo-bio-backend/model/req"
 	"github.com/airren/echo-bio-backend/model/vo"
@@ -27,7 +26,7 @@ import (
 //	@Produce		json
 //	@Param			file	formData	file	true	"FILE"
 //	@Success		200	{object}	vo.FileVO
-//	@Failure		400	{string}	vo.BaseVO
+//	@Failure		400	{object}	vo.BaseVO
 //	@Failure		500	{object}	vo.BaseVO
 //	@Router			/file/update/ [put]
 func UploadFile(c *gin.Context) {
@@ -42,7 +41,7 @@ func UploadFile(c *gin.Context) {
 	ctx := utils.GetCtx(c)
 	global.Logger.Info(file.Filename)
 	fileInfo.Id = utils.GenerateId()
-	fileInfo.Name = minio.GetMinioFileName(c, fileInfo.Id, file.Filename)
+	fileInfo.Name = file.Filename
 	userId, err := utils.GetUserId(c)
 	fileInfo.AccountId = userId
 	f, err := service.UploadFile(ctx, &fileInfo, file)
@@ -61,7 +60,7 @@ func UploadFile(c *gin.Context) {
 //	@Produce		json
 //	@Param			id	path		string	true	"FILE ID"	Format(octet-stream)
 //	@Success		200	{object}	vo.BaseVO
-//	@Failure		400	{string}	vo.BaseVO
+//	@Failure		400	{object}	vo.BaseVO
 //	@Failure		404	{object}	vo.BaseVO
 //	@Failure		500	{object}	vo.BaseVO
 //	@Router			/file/download/{id} [post]
@@ -92,19 +91,26 @@ func DownloadFileById(c *gin.Context) {
 	c.DataFromReader(http.StatusOK, -1, "application/octet-stream", fileSrc, extraHeaders)
 }
 
-// ListFileInfoByUserId godoc
+// ListFileInfo godoc
 //
 //	@Summary		List files
 //	@Description	List files by user id
 //	@Tags			file
 //	@Accept			json
 //	@Produce		json
-//	@Success		200	{object}	vo.BaseVO
+//	@Success		200	{object}	[]model.File
 //	@Router			/file/list [get]
-func ListFileInfoByUserId(c *gin.Context) {
+func ListFileInfo(c *gin.Context) {
+	pageInfo := model.PageInfo{}
+	if err := c.ShouldBindJSON(&pageInfo); err != nil {
+		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
+		return
+	}
 	ctx := utils.GetCtx(c)
-	files, err := dal.QueryFileByUserId(ctx)
-	bindResp(c, files, err)
+	files, err := dal.QueryFileByUserId(ctx, &pageInfo)
+	var total int64 = int64(len(files))
+	pageInfo.Total = &total
+	bindRespWithPageInfo(c, files, &pageInfo, err)
 }
 
 // ListFileInfoByIds godoc
@@ -115,7 +121,7 @@ func ListFileInfoByUserId(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			ids body  req.ListFileByIdsReq true	"FILE ID LIST"
-//	@Success		200	{object}	vo.BaseVO
+//	@Success		200	{array}		model.File
 //	@Failure		400	{object}	vo.BaseVO
 //	@Router			/file/listByIds [get]
 func ListFileInfoByIds(c *gin.Context) {

@@ -78,6 +78,35 @@ definitions:
       updated_by:
         type: string
     type: object
+  model.File:
+    properties:
+      MD5:
+        type: string
+      URLPath:
+        type: string
+      account_id:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      deleted_at:
+        type: string
+      deleted_by:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      org:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
   model.Job:
     properties:
       account_id:
@@ -233,7 +262,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/vo.BaseVO'
         "404":
           description: Not Found
           schema:
@@ -256,7 +285,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/vo.BaseVO'
+            items:
+              $ref: '#/definitions/model.File'
+            type: array
       summary: List files
       tags:
       - file
@@ -278,7 +309,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/vo.BaseVO'
+            items:
+              $ref: '#/definitions/model.File'
+            type: array
         "400":
           description: Bad Request
           schema:
@@ -307,7 +340,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/vo.BaseVO'
         "500":
           description: Internal Server Error
           schema:
