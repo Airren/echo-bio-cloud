@@ -107,6 +107,7 @@ func QueryAlgorithm(c *gin.Context) {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
 		return
 	}
+	algoReq.UpdatePageInfo()
 	ctx := utils.GetCtx(c)
 
 	algorithms, pageInfo, err := service.QueryAlgorithm(ctx, algoReq)

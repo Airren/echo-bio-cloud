@@ -46,9 +46,10 @@ func JobAPI(r *gin.RouterGroup) {
 
 func FileAPI(r *gin.RouterGroup) {
 	file := r.Group("file")
-	file.PUT("/update", controller.UpdateFile)
 	file.GET("/download/:id", controller.DownloadFileById)
+	file.GET("/public/download/:id", controller.DownloadFileById)
 	file.POST("/upload", controller.UploadFile)
+	file.PUT("/update", controller.UpdateFileInfo)
 	file.POST("/list", controller.ListFileInfo)
 	file.POST("/listByIds", controller.ListFileInfoByIds)
 }

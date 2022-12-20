@@ -5,13 +5,12 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"go.uber.org/zap"
 	"io"
 	"mime/multipart"
 	"strconv"
 	"time"
 
-	"github.com/minio/minio-go/v7"
+	"go.uber.org/zap"
 
 	"github.com/airren/echo-bio-backend/dal"
 	"github.com/airren/echo-bio-backend/global"
@@ -22,65 +21,96 @@ import (
 	"github.com/airren/echo-bio-backend/utils"
 )
 
-func UploadFile(c context.Context, req *model.File, file *multipart.FileHeader) (*vo.FileVO, error) {
-	if req.Id == 0 {
-		req.Id = utils.GenerateId()
-	}
-	req.CreatedAt = time.Now()
-	userId, err := utils.GetUserId(c)
-	if err != nil && err.Error() != "userId not exist" {
-		return nil, err
-	}
-	org := utils.GetOrgFromCtx(c)
-	req.Org = org
-	exist, err := minioClient.BucketExist(c, org)
-	if err != nil {
-		return nil, err
-	}
-	if !exist {
-		global.Logger.Info(fmt.Sprintf("Bucket:%s does not exist,trying to create", org))
-		err := minioClient.CreateBucket(c, org)
-		if err != nil {
-			return nil, err
-		}
-	}
-	src, err := file.Open()
+func UploadFile(c context.Context, fh *multipart.FileHeader) (*vo.FileVO, error) {
+
+	src, err := fh.Open()
 	if err != nil {
 		return nil, err
 	}
 	defer src.Close()
+
 	Md5 := fileToMd5(src)
-	req.MD5 = Md5
-	total, err := dal.CheckIfFileExist(c, Md5)
-	if err != nil {
+	fileInfo, err := dal.QueryFileByMd5(c, Md5)
+	if err != nil && err.Error() != "record not found" {
 		global.Logger.Error("check file md5 failed", zap.Error(err))
 		return nil, err
 	}
-	if total == 0 {
-		req, err = minioClient.UploadFileToMinio(c, req, file)
-		if err != nil {
-			global.Logger.Error("upload file failed", zap.Error(err))
-			return nil, err
-		}
+	if fileInfo.Id != 0 {
+		return FileToVO(fileInfo), err
 	}
-	req.AccountId = userId
-	_, err = dal.InsertFileMetaInfo(c, req)
+
+	// if file not exist, create a new file info and put to the oss
+	userId, err := utils.GetUserId(c)
 	if err != nil {
 		return nil, err
 	}
-	return FileToVO(*req), err
-}
+	org := utils.GetOrgFromCtx(c)
+	fileInfo.RecordMeta = model.RecordMeta{
+		Id:        utils.GenerateId(),
+		AccountId: userId,
+		Org:       org,
+		CreatedAt: time.Now(),
+		CreatedBy: userId,
+	}
+	fileInfo.Name = fh.Filename
+	fileInfo.MD5 = Md5
+	fileInfo.FileType = minioClient.GetFileType(fh.Filename)
 
-func DownloadFileById(c context.Context, fileId uint64) (*minio.Object, error) {
-	fileInfo, err := dal.QueryFileById(c, fileId)
+	err = minioClient.UploadFileToMinio(c, fileInfo.Org, fileInfo.MD5, fh)
+	if err != nil {
+		global.Logger.Error("upload file failed", zap.Error(err))
+		return nil, err
+	}
+
+	fileInfo.URLPath = fmt.Sprintf("/api/v1/file/download/%d", fileInfo.Id)
+	fileInfo, err = dal.InsertFileInfo(c, fileInfo)
 	if err != nil {
 		return nil, err
 	}
-	file, err := minioClient.DownloadObjectFromMinio(c, fileInfo.Org, fileInfo.Name)
-	return file, err
+	return FileToVO(fileInfo), err
 }
 
-func FileToEntity(req req.FileReq) *model.File {
+func UpdateFileInfo(c context.Context, fileReq *req.FileReq) (*vo.FileVO, error) {
+	fileInfo := FileToEntity(fileReq)
+	if fileInfo.IsPublic {
+		fileInfo.URLPath = fmt.Sprintf("/api/v1/file/public/download/%d", fileInfo.Id)
+	}
+
+	file, err := dal.UpdateFileInfo(c, fileInfo)
+	return FileToVO(file), err
+}
+
+func DownloadFileById(c context.Context, fileId uint64) (fileInfo *model.File, bytes []byte, err error) {
+	fileInfo, err = dal.QueryFileById(c, fileId)
+	if err != nil {
+		return
+	}
+	object, err := minioClient.DownloadObjectFromMinio(c, fileInfo.Org, fileInfo.MD5)
+	bytes, err = io.ReadAll(object)
+	return
+}
+
+func ListFileInfo(c context.Context, req *req.FileReq) (fileVOs []*vo.FileVO, pageInfo *model.PageInfo, err error) {
+	file := FileToEntity(req)
+	files, err := dal.ListFiles(c, file, &req.PageInfo)
+	for _, v := range files {
+		fileVOs = append(fileVOs, FileToVO(v))
+	}
+	return fileVOs, &req.PageInfo, err
+}
+
+func QueryFileByIds(c context.Context, req *req.IdsReq) (fileVOs []*vo.FileVO, err error) {
+	files, err := dal.QueryFileByIds(c, req.IdsToInt())
+	if err != nil {
+		return nil, err
+	}
+	for _, v := range files {
+		fileVOs = append(fileVOs, FileToVO(v))
+	}
+	return fileVOs, err
+}
+
+func FileToEntity(req *req.FileReq) *model.File {
 	var Id int64
 	if req.Id != "" {
 		Id, _ = strconv.ParseInt(req.Id, 10, 64)
@@ -88,15 +118,18 @@ func FileToEntity(req req.FileReq) *model.File {
 	return &model.File{
 		RecordMeta:  model.RecordMeta{Id: uint64(Id)},
 		Name:        req.Name,
+		FileType:    req.FileType,
+		IsPublic:    req.IsPublic,
 		Description: req.Description,
-		URLPath:     req.URLPath,
 	}
 }
 
-func FileToVO(file model.File) *vo.FileVO {
+func FileToVO(file *model.File) *vo.FileVO {
 	return &vo.FileVO{
-		Id:          fmt.Sprint(file.Id),
+		RecordMeta:  RecordMetaToVO(file.RecordMeta),
 		Name:        file.Name,
+		FileType:    file.FileType,
+		IsPublic:    file.IsPublic,
 		Description: file.Description,
 		URLPath:     file.URLPath,
 	}

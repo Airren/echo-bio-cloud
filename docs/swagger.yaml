@@ -96,8 +96,13 @@ definitions:
         type: string
       description:
         type: string
+      file_type:
+        type: string
       id:
         type: integer
+      isPublic:
+        description: allowed access by other user
+        type: boolean
       name:
         type: string
       org:
@@ -162,6 +167,8 @@ definitions:
         type: integer
       group:
         type: string
+      id:
+        type: string
       image:
         type: string
       label:
@@ -185,11 +192,11 @@ definitions:
       total:
         type: integer
     type: object
-  req.ListFileByIdsReq:
+  req.IdsReq:
     properties:
       ids:
         items:
-          type: integer
+          type: string
         type: array
     type: object
   vo.BaseVO:
@@ -218,11 +225,31 @@ definitions:
     properties:
       URLPath:
         type: string
+      account_id:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      deleted_at:
+        type: string
+      deleted_by:
+        type: string
       description:
+        type: string
+      file_type:
         type: string
       id:
         type: string
+      isPublic:
+        type: boolean
       name:
+        type: string
+      org:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
         type: string
     type: object
 host: http://echo-bio.cn
@@ -272,7 +299,7 @@ paths:
       tags:
       - file
   /file/list:
-    get:
+    post:
       consumes:
       - application/json
       description: List files by user id
@@ -299,7 +326,7 @@ paths:
         name: ids
         required: true
         schema:
-          $ref: '#/definitions/req.ListFileByIdsReq'
+          $ref: '#/definitions/req.IdsReq'
       produces:
       - application/json
       responses:
@@ -318,6 +345,27 @@ paths:
       - file
   /file/update/:
     put:
+      consumes:
+      - application/json
+      description: update file info
+      parameters:
+      - description: FILE
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/vo.FileVO'
+      summary: update file info
+      tags:
+      - file
+  /file/upload/:
+    post:
       consumes:
       - application/json
       description: Upload a file
