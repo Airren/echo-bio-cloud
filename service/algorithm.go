@@ -119,8 +119,12 @@ func UpdateAlgorithm(c context.Context, file multipart.File) error {
 }
 
 func AlgorithmToEntity(req req.AlgorithmReq) *model.Algorithm {
+	var Id int64
+	if req.Id != "" {
+		Id, _ = strconv.ParseInt(req.Id, 10, 64)
+	}
 	return &model.Algorithm{
-		RecordMeta:  model.RecordMeta{},
+		RecordMeta:  model.RecordMeta{Id: uint64(Id)},
 		Name:        req.Name,
 		Label:       req.Label,
 		Image:       req.Image,
@@ -137,7 +141,6 @@ func AlgorithmToEntity(req req.AlgorithmReq) *model.Algorithm {
 func AlgorithmToVO(algorithm model.Algorithm) *vo.AlgorithmVO {
 	return &vo.AlgorithmVO{
 		RecordMeta:  RecordMetaToVO(algorithm.RecordMeta),
-		Id:          fmt.Sprint(algorithm.RecordMeta.Id),
 		Name:        algorithm.Name,
 		Label:       algorithm.Label,
 		Image:       algorithm.Image,

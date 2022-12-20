@@ -39,7 +39,8 @@ func (pi *PageInfo) UpdatePageInfo() {
 		pi.PageSize = MaxPageSize
 	}
 	if pi.OrderBy == "" {
-		pi.OrderBy = "created_at"
+		pi.OrderBy = "updated_at"
+		pi.Asc = false
 	}
 	if pi.Page == 0 {
 		pi.Page = 1

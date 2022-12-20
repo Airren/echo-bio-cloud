@@ -1,10 +1,12 @@
 package dal
 
 import (
+	"context"
 	"fmt"
 	"gorm.io/gorm"
 
 	"github.com/airren/echo-bio-backend/model"
+	"github.com/airren/echo-bio-backend/utils"
 )
 
 func queryByPage(db *gorm.DB, info *model.PageInfo) *gorm.DB {
@@ -24,7 +26,8 @@ func queryByPage(db *gorm.DB, info *model.PageInfo) *gorm.DB {
 	return db
 }
 
-func queryByUserId(db *gorm.DB, userId string) *gorm.DB {
+func queryByUserId(ctx context.Context, db *gorm.DB) *gorm.DB {
+	userId, _ := utils.GetUserId(ctx)
 	if userId != "" {
 		return db.Where("account_id = ?", userId)
 	}

@@ -17,13 +17,9 @@ func CreateJob(ctx context.Context, job *model.Job) (*model.Job, error) {
 func QueryJobs(ctx context.Context, job *model.Job, info *model.PageInfo) (
 	jobs []*model.Job, err error) {
 
-	userId, err := utils.GetUserId(ctx)
-	if err != nil {
-		return
-	}
 	query := db.Model(&model.Job{})
 	query = queryByPage(query, info)
-	query = queryByUserId(query, userId)
+	query = queryByUserId(ctx, query)
 	if job.Id != 0 {
 		query = db.Where("id = ?", job.Id)
 	}

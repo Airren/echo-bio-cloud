@@ -69,7 +69,6 @@ func GroupToEntity(req req.Group) *model.AlgoGroup {
 func GroupToVO(group model.AlgoGroup) *vo.Group {
 	return &vo.Group{
 		RecordMeta: RecordMetaToVO(group.RecordMeta),
-		Id:         fmt.Sprint(group.Id),
 		Name:       group.Name,
 		Label:      group.Label,
 	}
@@ -77,6 +76,7 @@ func GroupToVO(group model.AlgoGroup) *vo.Group {
 
 func RecordMetaToVO(r model.RecordMeta) *vo.RecordMeta {
 	return &vo.RecordMeta{
+		Id:        fmt.Sprint(r.Id),
 		AccountId: r.AccountId,
 		Org:       r.Org,
 		CreatedAt: r.CreatedAt,

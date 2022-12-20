@@ -3,6 +3,7 @@ package req
 import "github.com/airren/echo-bio-backend/model"
 
 type AlgorithmReq struct {
+	Id             string                 `json:"id"`
 	Name           string                 `json:"name" `
 	Label          string                 `json:"label" `
 	Image          string                 `json:"image" `

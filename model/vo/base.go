@@ -7,6 +7,7 @@ import (
 )
 
 type RecordMeta struct {
+	Id        string         `json:"id"`
 	AccountId string         `json:"account_id" `
 	Org       string         `json:"org" gorm:"type:varchar(20)"`
 	CreatedAt time.Time      `json:"created_at" `

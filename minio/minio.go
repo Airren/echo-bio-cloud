@@ -3,31 +3,45 @@ package minio
 import (
 	"context"
 	"fmt"
+	"strings"
+
 	"github.com/minio/minio-go/v7"
 	"go.uber.org/zap"
 	"mime/multipart"
 
 	"github.com/airren/echo-bio-backend/global"
-	"github.com/airren/echo-bio-backend/model"
 )
 
-func UploadFileToMinio(ctx context.Context, fileInfo *model.File, file *multipart.FileHeader) (*model.File, error) {
-	var (
-		err error
-	)
-	src, err := file.Open()
+func UploadFileToMinio(ctx context.Context, bucket, objectName string, fh *multipart.FileHeader) (
+	err error) {
+	// check if bucket exist
+	exist, err := BucketExist(ctx, bucket)
 	if err != nil {
-		return nil, err
+		return err
+	}
+	if !exist {
+		global.Logger.Info(fmt.Sprintf("Bucket:%s does not exist,trying to create", bucket))
+		err := CreateBucket(ctx, bucket)
+		if err != nil {
+			return err
+		}
+	}
+
+	// put file to the bucket
+	src, err := fh.Open()
+	if err != nil {
+		return err
 	}
 	defer src.Close()
-	//use org as bucketName
-	_, err = global.MinioClient.PutObject(ctx, fileInfo.Org, fileInfo.MD5, src, file.Size, minio.PutObjectOptions{ContentType: "contentType"})
+	contentType := GetContentType(GetFileType(fh.Filename))
+	_, err = global.MinioClient.PutObject(ctx, bucket, objectName,
+		src, fh.Size, minio.PutObjectOptions{ContentType: contentType})
 	if err != nil {
 		global.Logger.Error("Upload fileInfo failed", zap.Error(err))
-		return nil, err
+		return err
 	}
-	global.Logger.Info("Successfully uploaded file: ", zap.String("name", fileInfo.Name))
-	return fileInfo, err
+	global.Logger.Info("Successfully uploaded file: ", zap.String("name", fh.Filename))
+	return err
 }
 
 //func GetFileUrl(ctx context.Context, bucketName string, fileName string, expires time.Duration) string {
@@ -75,4 +89,27 @@ func CreateBucket(ctx context.Context, bucketName string) error {
 		global.Logger.Info(fmt.Sprintf("Successfully created %s\n", bucketName))
 	}
 	return err
+}
+
+func GetFileType(name string) (fileType string) {
+	elems := strings.Split(name, ".")
+	if len(elems) > 1 {
+		return elems[len(elems)-1]
+	}
+	return ""
+}
+
+func GetContentType(filetype string) string {
+	switch filetype {
+	case "jpeg":
+		fallthrough
+	case "jpg":
+		return "image/jpeg"
+	case "png":
+		return "image/png"
+	case "csv":
+		return "text/plain"
+	default:
+		return "application/octet-stream"
+	}
 }

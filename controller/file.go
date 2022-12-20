@@ -1,18 +1,15 @@
 package controller
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/airren/echo-bio-backend/dal"
-	"github.com/airren/echo-bio-backend/global"
-	"github.com/airren/echo-bio-backend/model"
+	"github.com/airren/echo-bio-backend/minio"
 	"github.com/airren/echo-bio-backend/model/req"
-	"github.com/airren/echo-bio-backend/model/vo"
 	"github.com/airren/echo-bio-backend/service"
 	"github.com/airren/echo-bio-backend/utils"
 )
@@ -28,27 +25,42 @@ import (
 //	@Success		200	{object}	vo.FileVO
 //	@Failure		400	{object}	vo.BaseVO
 //	@Failure		500	{object}	vo.BaseVO
-//	@Router			/file/update/ [put]
+//	@Router			/file/upload/ [post]
 func UploadFile(c *gin.Context) {
-	fileInfo := model.File{}
-
-	//file, err := c.FormFile("file")
 	file, err := c.FormFile("file")
 	if err != nil {
-		bindRespWithStatus(c, http.StatusBadRequest, nil, errors.New("file not be empty"))
+		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
 		return
 	}
 	ctx := utils.GetCtx(c)
-	global.Logger.Info(file.Filename)
-	fileInfo.Id = utils.GenerateId()
-	fileInfo.Name = file.Filename
-	userId, err := utils.GetUserId(c)
-	fileInfo.AccountId = userId
-	f, err := service.UploadFile(ctx, &fileInfo, file)
+	fileInfo, err := service.UploadFile(ctx, file)
 	if err != nil {
 		bindRespWithStatus(c, http.StatusInternalServerError, nil, err)
+		return
 	}
-	bindResp(c, vo.FileVO{Id: fmt.Sprint(f.Id)}, err)
+	bindResp(c, fileInfo, err)
+}
+
+// UpdateFileInfo godoc
+//
+//	@Summary		update file info
+//	@Description	update file info
+//	@Tags			file
+//	@Accept			json
+//	@Produce		json
+//	@Param			file	formData	file	true	"FILE"
+//	@Success		200	{object}	vo.FileVO
+//	@Router			/file/update/ [put]
+func UpdateFileInfo(c *gin.Context) {
+	fileReq := req.FileReq{}
+
+	if err := c.Bind(&fileReq); err != nil {
+		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
+		return
+	}
+	ctx := utils.GetCtx(c)
+	fileInfo, err := service.UpdateFileInfo(ctx, &fileReq)
+	bindResp(c, fileInfo, err)
 }
 
 // DownloadFileById godoc
@@ -71,46 +83,40 @@ func DownloadFileById(c *gin.Context) {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
 		return
 	}
-	fileSrc, err := service.DownloadFileById(ctx, fileId)
+	fileInfo, bytes, err := service.DownloadFileById(ctx, fileId)
 	if err != nil {
 		bindRespWithStatus(c, http.StatusInternalServerError, nil, err)
 		return
 	}
-	fileInfo, err := dal.QueryFileById(ctx, fileId)
-	fileSrc.Stat()
-	if err != nil {
-		bindRespWithStatus(c, http.StatusNotFound, nil, err)
-		return
-	}
-	//todo unable to display chinese
-	fileName := fileInfo.Name
-	extraHeaders := map[string]string{
-		"Content-Disposition": "attachment; filename=" + fileName,
-		"Cache-Control":       "no-cache",
-	}
-	c.DataFromReader(http.StatusOK, -1, "application/octet-stream", fileSrc, extraHeaders)
+	contentType := minio.GetContentType(fileInfo.FileType)
+
+	fileName := url.QueryEscape(fileInfo.Name)
+	c.Header("Content-Disposition",
+		fmt.Sprintf("inline; filename*=UTF-8''%s.%s", fileName, fileInfo.FileType))
+	c.Header("Content-Transfer-Encoding", "binary")
+	c.Header("Cache-Control", "no-cache")
+	c.Data(http.StatusOK, contentType, bytes)
 }
 
 // ListFileInfo godoc
 //
-//	@Summary		List files
+//	@Summary	    List files
 //	@Description	List files by user id
 //	@Tags			file
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	[]model.File
-//	@Router			/file/list [get]
+//	@Router			/file/list [post]
 func ListFileInfo(c *gin.Context) {
-	pageInfo := model.PageInfo{}
-	if err := c.ShouldBindJSON(&pageInfo); err != nil {
+	fileReq := req.FileReq{}
+	if err := c.Bind(&fileReq); err != nil {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
 		return
 	}
 	ctx := utils.GetCtx(c)
-	files, err := dal.QueryFileByUserId(ctx, &pageInfo)
-	var total int64 = int64(len(files))
-	pageInfo.Total = total
-	bindRespWithPageInfo(c, files, &pageInfo, err)
+	fileReq.UpdatePageInfo()
+	files, pageInfo, err := service.ListFileInfo(ctx, &fileReq)
+	bindRespWithPageInfo(c, files, pageInfo, err)
 }
 
 // ListFileInfoByIds godoc
@@ -120,25 +126,17 @@ func ListFileInfo(c *gin.Context) {
 //	@Tags			file
 //	@Accept			json
 //	@Produce		json
-//	@Param			ids body  req.ListFileByIdsReq true	"FILE ID LIST"
+//	@Param			ids body  req.IdsReq true	"FILE ID LIST"
 //	@Success		200	{array}		model.File
 //	@Failure		400	{object}	vo.BaseVO
 //	@Router			/file/listByIds [get]
 func ListFileInfoByIds(c *gin.Context) {
 	ctx := utils.GetCtx(c)
-	ids := req.ListFileByIdsReq{}
+	ids := req.IdsReq{}
 	if err := c.ShouldBindJSON(&ids); err != nil {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
 		return
 	}
-	file, err := dal.QueryFileByIds(ctx, ids.Ids)
+	file, err := service.QueryFileByIds(ctx, &ids)
 	bindResp(c, file, err)
-}
-
-func UpdateFile(c *gin.Context) {
-	file := model.File{}
-	if err := c.Bind(&file); err != nil {
-		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
-		return
-	}
 }

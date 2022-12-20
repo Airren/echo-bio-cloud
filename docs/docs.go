@@ -75,7 +75,7 @@ const docTemplate = `{
             }
         },
         "/file/list": {
-            "get": {
+            "post": {
                 "description": "List files by user id",
                 "consumes": [
                     "application/json"
@@ -120,7 +120,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/req.ListFileByIdsReq"
+                            "$ref": "#/definitions/req.IdsReq"
                         }
                     }
                 ],
@@ -145,6 +145,38 @@ const docTemplate = `{
         },
         "/file/update/": {
             "put": {
+                "description": "update file info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "update file info",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "FILE",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/vo.FileVO"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/upload/": {
+            "post": {
                 "description": "Upload a file",
                 "consumes": [
                     "application/json"
@@ -471,8 +503,15 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "file_type": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
+                },
+                "isPublic": {
+                    "description": "allowed access by other user",
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"
@@ -568,6 +607,9 @@ const docTemplate = `{
                 "group": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "image": {
                     "type": "string"
                 },
@@ -602,13 +644,13 @@ const docTemplate = `{
                 }
             }
         },
-        "req.ListFileByIdsReq": {
+        "req.IdsReq": {
             "type": "object",
             "properties": {
                 "ids": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             }
@@ -651,13 +693,43 @@ const docTemplate = `{
                 "URLPath": {
                     "type": "string"
                 },
+                "account_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "deleted_by": {
+                    "type": "string"
+                },
                 "description": {
+                    "type": "string"
+                },
+                "file_type": {
                     "type": "string"
                 },
                 "id": {
                     "type": "string"
                 },
+                "isPublic": {
+                    "type": "boolean"
+                },
                 "name": {
+                    "type": "string"
+                },
+                "org": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
                     "type": "string"
                 }
             }
