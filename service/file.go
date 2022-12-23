@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 	"io"
 	"mime/multipart"
 	"strconv"
@@ -21,7 +20,7 @@ import (
 	"github.com/airren/echo-bio-backend/utils"
 )
 
-func UploadFile(c context.Context, fh *multipart.FileHeader) (*vo.FileVO, error) {
+func UploadFile(c context.Context, fh *multipart.FileHeader, visibility int) (*vo.FileVO, error) {
 
 	src, err := fh.Open()
 	if err != nil {
@@ -52,9 +51,9 @@ func UploadFile(c context.Context, fh *multipart.FileHeader) (*vo.FileVO, error)
 		CreatedAt: time.Now(),
 		CreatedBy: userId,
 	}
-	fileInfo.Name = fh.Filename
 	fileInfo.MD5 = Md5
-	fileInfo.FileType = minioClient.GetFileType(fh.Filename)
+	fileInfo.Name, fileInfo.FileType = minioClient.GetFileNameType(fh.Filename)
+	fileInfo.Visibility = visibility
 
 	err = minioClient.UploadFileToMinio(c, fileInfo.Org, fileInfo.MD5, fh)
 	if err != nil {
@@ -62,7 +61,7 @@ func UploadFile(c context.Context, fh *multipart.FileHeader) (*vo.FileVO, error)
 		return nil, err
 	}
 
-	fileInfo.URLPath = fmt.Sprintf("/api/v1/file/download/%d", fileInfo.Id)
+	fileInfo.SetURLPath()
 	fileInfo, err = dal.InsertFileInfo(c, fileInfo)
 	if err != nil {
 		return nil, err
@@ -72,15 +71,14 @@ func UploadFile(c context.Context, fh *multipart.FileHeader) (*vo.FileVO, error)
 
 func UpdateFileInfo(c context.Context, fileReq *req.FileReq) (*vo.FileVO, error) {
 	fileInfo := FileToEntity(fileReq)
-	if fileInfo.IsPublic {
-		fileInfo.URLPath = fmt.Sprintf("/api/v1/file/public/download/%d", fileInfo.Id)
-	}
+	fileInfo.SetURLPath()
 
 	file, err := dal.UpdateFileInfo(c, fileInfo)
 	return FileToVO(file), err
 }
 
 func DownloadFileById(c context.Context, fileId uint64) (fileInfo *model.File, bytes []byte, err error) {
+	// make user is valid, have access to the file
 	fileInfo, err = dal.QueryFileById(c, fileId)
 	if err != nil {
 		return
@@ -110,6 +108,10 @@ func QueryFileByIds(c context.Context, req *req.IdsReq) (fileVOs []*vo.FileVO, e
 	return fileVOs, err
 }
 
+func DeleteFileByIds(c context.Context, idsReq *req.IdsReq) (err error) {
+	return dal.DeleteFileByIds(c, idsReq.IdsToInt())
+}
+
 func FileToEntity(req *req.FileReq) *model.File {
 	var Id int64
 	if req.Id != "" {
@@ -119,7 +121,7 @@ func FileToEntity(req *req.FileReq) *model.File {
 		RecordMeta:  model.RecordMeta{Id: uint64(Id)},
 		Name:        req.Name,
 		FileType:    req.FileType,
-		IsPublic:    req.IsPublic,
+		Visibility:  req.Visibility,
 		Description: req.Description,
 	}
 }
@@ -129,7 +131,7 @@ func FileToVO(file *model.File) *vo.FileVO {
 		RecordMeta:  RecordMetaToVO(file.RecordMeta),
 		Name:        file.Name,
 		FileType:    file.FileType,
-		IsPublic:    file.IsPublic,
+		Visibility:  file.Visibility,
 		Description: file.Description,
 		URLPath:     file.URLPath,
 	}

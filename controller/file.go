@@ -32,8 +32,14 @@ func UploadFile(c *gin.Context) {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
 		return
 	}
+	isPublic, _ := c.GetPostForm("visibility")
+	visibility := 2
+	if isPublic == "public" {
+		visibility = 1
+	}
+
 	ctx := utils.GetCtx(c)
-	fileInfo, err := service.UploadFile(ctx, file)
+	fileInfo, err := service.UploadFile(ctx, file, visibility)
 	if err != nil {
 		bindRespWithStatus(c, http.StatusInternalServerError, nil, err)
 		return
@@ -139,4 +145,26 @@ func ListFileInfoByIds(c *gin.Context) {
 	}
 	file, err := service.QueryFileByIds(ctx, &ids)
 	bindResp(c, file, err)
+}
+
+// DeleteFileInfoByIds godoc
+//
+//	@Summary		Delete files
+//	@Description	Delete  files by file ids
+//	@Tags			file
+//	@Accept			json
+//	@Produce		json
+//	@Param			ids body  req.IdsReq true	"FILE ID LIST"
+//	@Success		200	{array}		vo.BaseVO
+//	@Failure		400	{object}	vo.BaseVO
+//	@Router			/file/delete_by_ids [get]
+func DeleteFileInfoByIds(c *gin.Context) {
+	ctx := utils.GetCtx(c)
+	ids := req.IdsReq{}
+	if err := c.ShouldBindJSON(&ids); err != nil {
+		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
+		return
+	}
+	err := service.DeleteFileByIds(ctx, &ids)
+	bindResp(c, nil, err)
 }
