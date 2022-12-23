@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/airren/echo-bio-backend/model"
 	"github.com/airren/echo-bio-backend/utils"
@@ -25,6 +26,11 @@ func ListFiles(c context.Context, file *model.File, pageInfo *model.PageInfo) (
 	if file.Name != "" {
 		query = query.Where("name like ?", fmt.Sprintf("%%%s%%", file.Name))
 	}
+	if file.IsPublic() {
+		query = query.Where("visibility = 1")
+	} else if file.IsPrivate() {
+		query = query.Where("visibility = 2")
+	}
 	if pageInfo != nil {
 		query.Count(&pageInfo.Total)
 	}
@@ -44,7 +50,7 @@ func QueryFileById(ctx context.Context, id uint64) (file *model.File, err error)
 	query := db.Model(&model.File{})
 	query = query.Where("id = ?", id)
 	err = query.Find(&file).Error
-	if file.IsPublic {
+	if file.IsPublic() {
 		return
 	}
 	userId, _ := utils.GetUserId(ctx)
@@ -54,12 +60,21 @@ func QueryFileById(ctx context.Context, id uint64) (file *model.File, err error)
 	return
 }
 
-func QueryFileByIds(ctx context.Context, id []int64) (file []*model.File, err error) {
+func QueryFileByIds(ctx context.Context, ids []int64) (file []*model.File, err error) {
 	query := db.Model(&model.File{})
-	query = query.Where("id IN ?", id)
+	query = query.Where("id IN ?", ids)
 	query = queryByUserId(ctx, query)
 	err = query.Find(&file).Error
 	return
+}
+
+func DeleteFileByIds(ctx context.Context, ids []int64) (err error) {
+	deleteAt := time.Now()
+	query := db.Model(&model.File{})
+	query = queryByUserId(ctx, query)
+	query = query.Where("id IN ?", ids)
+	return query.Updates(map[string]interface{}{
+		"deleted_at": deleteAt, "deleted_by": "user"}).Error
 }
 
 func CheckIfFileExist(ctx context.Context, Md5 string) (exist bool, err error) {

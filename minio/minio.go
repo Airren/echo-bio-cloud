@@ -33,7 +33,8 @@ func UploadFileToMinio(ctx context.Context, bucket, objectName string, fh *multi
 		return err
 	}
 	defer src.Close()
-	contentType := GetContentType(GetFileType(fh.Filename))
+	_, fileType := GetFileNameType(fh.Filename)
+	contentType := GetContentType(fileType)
 	_, err = global.MinioClient.PutObject(ctx, bucket, objectName,
 		src, fh.Size, minio.PutObjectOptions{ContentType: contentType})
 	if err != nil {
@@ -91,12 +92,13 @@ func CreateBucket(ctx context.Context, bucketName string) error {
 	return err
 }
 
-func GetFileType(name string) (fileType string) {
-	elems := strings.Split(name, ".")
+func GetFileNameType(nameType string) (name, fileType string) {
+	elems := strings.Split(nameType, ".")
 	if len(elems) > 1 {
-		return elems[len(elems)-1]
+		fileType = elems[len(elems)-1]
+		return strings.TrimRight(nameType, fmt.Sprintf(".%s", fileType)), fileType
 	}
-	return ""
+	return nameType, ""
 }
 
 func GetContentType(filetype string) string {

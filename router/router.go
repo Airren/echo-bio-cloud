@@ -52,4 +52,5 @@ func FileAPI(r *gin.RouterGroup) {
 	file.PUT("/update", controller.UpdateFileInfo)
 	file.POST("/list", controller.ListFileInfo)
 	file.POST("/listByIds", controller.ListFileInfoByIds)
+	file.DELETE("delete_by_ids", controller.DeleteFileInfoByIds)
 }
