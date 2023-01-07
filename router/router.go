@@ -40,7 +40,7 @@ func AlgorithmAPI(r *gin.RouterGroup) {
 
 func JobAPI(r *gin.RouterGroup) {
 	job := r.Group("job")
-	job.GET("/list", controller.QueryJob)
+	job.POST("/list", controller.ListJob)
 	job.POST("/create", controller.CreateJob)
 }
 

@@ -4,6 +4,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
+	"github.com/airren/echo-bio-backend/config"
 	"github.com/airren/echo-bio-backend/model"
 )
 
@@ -13,8 +14,8 @@ func InitMySQL() error {
 	var (
 		err error
 	)
-	dsn := "root:1q2w3e4r%T@tcp(124.223.99.93:3306)/echo_bio?charset=utf8&parseTime=True&loc=Local"
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	dns := config.Conf.MysqlURI
+	db, err = gorm.Open(mysql.Open(dns), &gorm.Config{})
 
 	if err != nil {
 		return err

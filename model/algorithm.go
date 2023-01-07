@@ -3,16 +3,18 @@ package model
 type Algorithm struct {
 	RecordMeta
 
-	Name        string           `json:"name" gorm:"type:varchar(64);not null"`
+	Name        string           `json:"name" gorm:"type:varchar(64);unique;uniqueIndex;not null"`
 	Label       string           `json:"label" gorm:"type:varchar(64);not null"`
 	Image       string           `json:"image" gorm:"type:text;"`
 	Description string           `json:"description" gorm:"type:text"`
-	Price       int64            `json:"price" gorm:"type:int(11)"`
+	Point       int64            `json:"point" gorm:"type:int(11)"`
 	Favourite   int64            `json:"favourite" gorm:"type:int(11)"`
 	Parameters  []*AlgoParameter `gorm:"-"`
 	Command     string           `json:"command" gorm:"text"`
-	Document    string           `json:"document" gorm:"text"`
-	GroupId     string           `json:"group_id" gorm:"type:varchar(64)"`
+	DockerImage string           `json:"docker_image" gorm:"type:varchar(256);not null"`
+
+	Document string `json:"document" gorm:"text"`
+	GroupId  string `json:"group_id" gorm:"type:varchar(64)"`
 }
 
 type AlgoGroup struct {
