@@ -8,10 +8,11 @@ type AlgorithmReq struct {
 	Label          string                 `json:"label" `
 	Image          string                 `json:"image" `
 	Description    string                 `json:"description" `
-	Price          int64                  `json:"price" `
+	Point          int64                  `json:"point" `
 	Favourite      int64                  `json:"favourite"`
 	Parameters     []*model.AlgoParameter `json:"parameters"`
 	Command        string                 `json:"command"`
+	DockerImage    string                 `json:"docker_image" `
 	Document       string                 `json:"document"`
 	Group          string                 `json:"group"`
 	model.PageInfo `json:",inline"`

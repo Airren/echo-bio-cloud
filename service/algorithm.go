@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"gopkg.in/yaml.v2"
+	"gorm.io/gorm"
 
 	"github.com/airren/echo-bio-backend/dal"
 	"github.com/airren/echo-bio-backend/model"
@@ -34,9 +35,9 @@ func QueryAlgorithm(c context.Context, req req.AlgorithmReq) (algoVOs []*vo.Algo
 func CreateAlgorithm(c context.Context, algoReq req.AlgorithmReq) error {
 	algo := AlgorithmToEntity(algoReq)
 	OldAlgo, err := dal.QueryAlgorithmsByName(c, algo.Name)
-	if len(OldAlgo) > 0 {
-		return fmt.Errorf("algo <%v> already exist", OldAlgo[0].Name)
-	} else if err != nil {
+	if err == nil {
+		return fmt.Errorf("algo <%v> already exist", OldAlgo.Name)
+	} else if err != nil && err != gorm.ErrRecordNotFound {
 		return fmt.Errorf("query old record failed %v", err)
 	}
 	userId, _ := utils.GetUserId(c)
@@ -75,9 +76,9 @@ func CreateAlgorithmByFile(c context.Context, file multipart.File) error {
 		return err
 	}
 	OldAlgo, err := dal.QueryAlgorithmsByName(c, algo.Name)
-	if len(OldAlgo) > 0 {
-		return fmt.Errorf("algo <%v> already exist", OldAlgo[0].Name)
-	} else if err != nil {
+	if err == nil {
+		return fmt.Errorf("algo <%v> already exist", OldAlgo.Name)
+	} else if err != nil && err != gorm.ErrRecordNotFound {
 		return fmt.Errorf("query old record failed %v", err)
 	}
 	userId, _ := utils.GetUserId(c)
@@ -107,13 +108,14 @@ func UpdateAlgorithm(c context.Context, file multipart.File) error {
 	if err := yaml.Unmarshal(buf.Bytes(), algo); err != nil {
 		return err
 	}
+
 	OldAlgo, err := dal.QueryAlgorithmsByName(c, algo.Name)
-	if len(OldAlgo) == 0 {
-		return fmt.Errorf("algo <%v> does not exist, please create first", OldAlgo[0].Name)
-	} else if err != nil {
+	if err == nil {
+		return fmt.Errorf("algo <%v> already exist", OldAlgo.Name)
+	} else if err != nil && err != gorm.ErrRecordNotFound {
 		return fmt.Errorf("query old record failed %v", err)
 	}
-	algo.Id = OldAlgo[0].Id
+	algo.Id = OldAlgo.Id
 	_, err = dal.UpdateAlgorithm(c, algo)
 	return err
 }
@@ -129,10 +131,11 @@ func AlgorithmToEntity(req req.AlgorithmReq) *model.Algorithm {
 		Label:       req.Label,
 		Image:       req.Image,
 		Description: req.Description,
-		Price:       req.Price,
+		Point:       req.Point,
 		Favourite:   req.Favourite,
 		Parameters:  req.Parameters,
 		Command:     req.Command,
+		DockerImage: req.DockerImage,
 		Document:    req.Document,
 		GroupId:     req.Group,
 	}
@@ -145,10 +148,11 @@ func AlgorithmToVO(algorithm model.Algorithm) *vo.AlgorithmVO {
 		Label:       algorithm.Label,
 		Image:       algorithm.Image,
 		Description: algorithm.Description,
-		Price:       algorithm.Price,
+		Point:       algorithm.Point,
 		Favourite:   algorithm.Favourite,
 		Parameters:  algorithm.Parameters,
 		Command:     algorithm.Command,
+		DockerImage: algorithm.DockerImage,
 		Document:    algorithm.Document,
 		GroupId:     algorithm.GroupId,
 	}

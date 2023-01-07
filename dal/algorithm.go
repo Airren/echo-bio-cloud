@@ -40,11 +40,10 @@ func ListAlgorithms(ctx context.Context, algo *model.Algorithm, info *model.Page
 	return algorithms, err
 }
 
-func QueryAlgorithmsByName(ctx context.Context, name string) ([]*model.Algorithm, error) {
-	algorithms := make([]*model.Algorithm, 0)
+func QueryAlgorithmsByName(ctx context.Context, name string) (algorithm *model.Algorithm, err error) {
 	query := db.Where("name = ?", name)
-	err := query.Find(&algorithms).Error
-	return algorithms, err
+	err = query.First(&algorithm).Error
+	return algorithm, err
 }
 
 func GetAlgorithmById(ctx context.Context, id int64) (*model.Algorithm, error) {

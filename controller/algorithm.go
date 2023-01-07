@@ -1,13 +1,15 @@
 package controller
 
 import (
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+
 	"github.com/airren/echo-bio-backend/dal"
 	"github.com/airren/echo-bio-backend/model/req"
 	"github.com/airren/echo-bio-backend/service"
 	"github.com/airren/echo-bio-backend/utils"
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
 
 // GetAlgorithmById

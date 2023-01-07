@@ -3,11 +3,12 @@ package req
 import "github.com/airren/echo-bio-backend/model"
 
 type JobReq struct {
-	Id         uint64
-	Algorithm  string `json:"algorithm"`
-	InputFile  string `json:"inputFile"`
-	OutPutFile string
-	Parameter  string
-
-	model.PageInfo
+	Id             string                 `json:"id"`
+	Name           string                 `json:"name"`
+	Algorithm      string                 `json:"algorithm"`
+	Parameters     map[string]interface{} `json:"parameters"`
+	Outputs        string                 `json:"outputs"`
+	Status         model.JobStatus        `json:"status"`
+	Description    string                 `json:"description"`
+	model.PageInfo `json:",inline"`
 }
