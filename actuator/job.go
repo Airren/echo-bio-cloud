@@ -9,7 +9,7 @@ import (
 
 const LocalDataBase = "./static"
 
-func StartPaint(job model.Job) (outFile string, err error) {
+func StartPaint(job model.AnalysisJob) (outFile string, err error) {
 
 	userId := job.AccountId
 	localDataPath := path.Join(LocalDataBase, userId)
@@ -21,10 +21,10 @@ func StartPaint(job model.Job) (outFile string, err error) {
 	}
 
 	//upload input file
-	fileLocalPath := path.Join(localDataPath, job.InputFile)
+	fileLocalPath := path.Join(localDataPath, job.Name)
 	remoteFilePath, err := UpLoadFile(userId, fileLocalPath)
 	if err != nil {
-		log.Fatalf("upload input file failed, user: %s, file: %s", userId, job.InputFile)
+		log.Fatalf("upload input file failed, user: %s, file: %s", userId, job.Name)
 		return
 	}
 
@@ -36,7 +36,7 @@ func StartPaint(job model.Job) (outFile string, err error) {
 		return
 	}
 
-	remoteSquashFile, err := SquashFile(path.Join(BasePath, userId), job.InputFile+"-out")
+	remoteSquashFile, err := SquashFile(path.Join(BasePath, userId), job.Name+"-out")
 	if err != nil {
 		log.Fatalf("job %v squash failed %v", job.Id, err)
 	}
@@ -47,7 +47,7 @@ func StartPaint(job model.Job) (outFile string, err error) {
 	}
 
 	// todo refactor
-	outFile = job.InputFile + "-out.tar.gz"
+	outFile = job.Name + "-out.tar.gz"
 
 	return
 }

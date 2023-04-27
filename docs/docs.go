@@ -23,6 +23,49 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/file/delete_by_ids": {
+            "get": {
+                "description": "Delete  files by file ids",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "file"
+                ],
+                "summary": "Delete files",
+                "parameters": [
+                    {
+                        "description": "FILE ID LIST",
+                        "name": "ids",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/req.IdsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/vo.BaseVO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/vo.BaseVO"
+                        }
+                    }
+                }
+            }
+        },
         "/file/download/{id}": {
             "post": {
                 "description": "Download by file ID",
@@ -310,7 +353,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Job"
+                            "$ref": "#/definitions/model.AnalysisJob"
                         }
                     }
                 ],
@@ -435,6 +478,9 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "docker_image": {
+                    "type": "string"
+                },
                 "document": {
                     "type": "string"
                 },
@@ -465,8 +511,62 @@ const docTemplate = `{
                         "$ref": "#/definitions/model.AlgoParameter"
                     }
                 },
-                "price": {
+                "point": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AnalysisJob": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "algorithm": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "deleted_by": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "org": {
+                    "type": "string"
+                },
+                "outputs": {
+                    "type": "string"
+                },
+                "parameters": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "parametersStr": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/model.JobStatus"
                 },
                 "updated_at": {
                     "type": "string"
@@ -509,10 +609,6 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "isPublic": {
-                    "description": "allowed access by other user",
-                    "type": "boolean"
-                },
                 "name": {
                     "type": "string"
                 },
@@ -524,52 +620,29 @@ const docTemplate = `{
                 },
                 "updated_by": {
                     "type": "string"
+                },
+                "visibility": {
+                    "description": "allowed access by other user, 1: public ; 2: private",
+                    "type": "integer"
                 }
             }
         },
-        "model.Job": {
-            "type": "object",
-            "properties": {
-                "account_id": {
-                    "type": "string"
-                },
-                "algorithm": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "created_by": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "string"
-                },
-                "deleted_by": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "inputFile": {
-                    "type": "string"
-                },
-                "org": {
-                    "type": "string"
-                },
-                "outPutFile": {
-                    "type": "string"
-                },
-                "parameter": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "updated_by": {
-                    "type": "string"
-                }
-            }
+        "model.JobStatus": {
+            "type": "string",
+            "enum": [
+                "Pending",
+                "Progressing",
+                "Completed",
+                "Failed",
+                "Canceled"
+            ],
+            "x-enum-varnames": [
+                "PENDING",
+                "PROGRESSING",
+                "COMPLETED",
+                "FAILED",
+                "CANCELED"
+            ]
         },
         "model.ParamType": {
             "type": "string",
@@ -596,6 +669,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "description": {
+                    "type": "string"
+                },
+                "docker_image": {
                     "type": "string"
                 },
                 "document": {
@@ -636,7 +712,7 @@ const docTemplate = `{
                         "$ref": "#/definitions/model.AlgoParameter"
                     }
                 },
-                "price": {
+                "point": {
                     "type": "integer"
                 },
                 "total": {
@@ -717,9 +793,6 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "isPublic": {
-                    "type": "boolean"
-                },
                 "name": {
                     "type": "string"
                 },
@@ -731,6 +804,9 @@ const docTemplate = `{
                 },
                 "updated_by": {
                     "type": "string"
+                },
+                "visibility": {
+                    "type": "integer"
                 }
             }
         }
