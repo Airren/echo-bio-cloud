@@ -40,8 +40,11 @@ func InitConfig() {
 	)
 	if os.Getenv("ENV") == "prod" {
 		conf, err = os.ReadFile("./conf/echo-bio-cloud.yaml")
-	} else {
+	} else if os.Getenv("ENV") == "dev" {
 		conf, err = os.ReadFile("./conf/echo-bio-cloud-dev.yaml")
+	} else {
+
+		conf, err = os.ReadFile("../conf/echo-bio-cloud-dev.yaml")
 	}
 	if err != nil {
 		log.Fatal(fmt.Sprint("read config file failed:", err))

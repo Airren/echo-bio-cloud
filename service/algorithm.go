@@ -34,7 +34,7 @@ func QueryAlgorithm(c context.Context, req req.AlgorithmReq) (algoVOs []*vo.Algo
 
 func CreateAlgorithm(c context.Context, algoReq req.AlgorithmReq) error {
 	algo := AlgorithmToEntity(algoReq)
-	OldAlgo, err := dal.QueryAlgorithmsByName(c, algo.Name)
+	OldAlgo, err := dal.GetAlgorithmByName(c, algo.Name)
 	if err == nil {
 		return fmt.Errorf("algo <%v> already exist", OldAlgo.Name)
 	} else if err != nil && err != gorm.ErrRecordNotFound {
@@ -75,7 +75,7 @@ func CreateAlgorithmByFile(c context.Context, file multipart.File) error {
 	if err := yaml.Unmarshal(buf.Bytes(), algo); err != nil {
 		return err
 	}
-	OldAlgo, err := dal.QueryAlgorithmsByName(c, algo.Name)
+	OldAlgo, err := dal.GetAlgorithmByName(c, algo.Name)
 	if err == nil {
 		return fmt.Errorf("algo <%v> already exist", OldAlgo.Name)
 	} else if err != nil && err != gorm.ErrRecordNotFound {
@@ -109,7 +109,7 @@ func UpdateAlgorithm(c context.Context, file multipart.File) error {
 		return err
 	}
 
-	OldAlgo, err := dal.QueryAlgorithmsByName(c, algo.Name)
+	OldAlgo, err := dal.GetAlgorithmByName(c, algo.Name)
 	if err == nil {
 		return fmt.Errorf("algo <%v> already exist", OldAlgo.Name)
 	} else if err != nil && err != gorm.ErrRecordNotFound {

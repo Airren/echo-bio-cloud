@@ -7,11 +7,11 @@ run: generate
 
 .PHONY: build_mac
 build_mac: generate
-	GOOS=darwin GOARCH=arm64 go build -o ./bin/exporter-demo main.go
+	GOOS=darwin GOARCH=arm64 go build -o ./bin main.go
 
 .PHONY: build_linux
 build_linux: generate
-	GOOS=linux GOARCH=amd64 go build -o ./bin/exporter-demo main.go
+	GOOS=linux GOARCH=amd64 go build -o ./bin main.go
 
 .PHONY: build_image
 build_image: generate

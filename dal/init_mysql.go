@@ -23,7 +23,7 @@ func InitMySQL() error {
 	//db.SingularTable(true)
 	db = db.Debug()
 	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Algorithm{})
-	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.Job{})
+	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.AnalysisJob{})
 	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.AlgoParameter{})
 	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.File{})
 	err = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.AlgoGroup{})

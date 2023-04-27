@@ -1,7 +1,11 @@
 package main
 
 import (
+	"github.com/airren/echo-bio-backend/global"
+
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/airren/echo-bio-backend/config"
 	"github.com/airren/echo-bio-backend/dal"
@@ -9,8 +13,6 @@ import (
 	"github.com/airren/echo-bio-backend/middleware"
 	"github.com/airren/echo-bio-backend/minio"
 	"github.com/airren/echo-bio-backend/router"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // @title Echo-Bio-Cloud
@@ -22,12 +24,17 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host http://echo-bio.cn
 // @BasePath /api/v1/
+//
 //go:generate swag init
 func main() {
 
 	config.InitConfig()
 	config.AuthInit()
 	config.GetLogger()
+
+	global.Logger.Info("echo-bio start successfully")
+	//go executor.Run(context.TODO())
+	//executor.KubeInitializer()
 
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
