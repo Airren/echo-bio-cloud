@@ -2,6 +2,7 @@ serviceName=echo-bio-cloud
 
 
 .PHONY: run
+
 run: generate
 	go run main.go
 

@@ -14,10 +14,12 @@ func AuthMiddleware(c *gin.Context) {
 	// Debug log
 	log.Println(c.Request.URL.String())
 
+
 	if strings.HasPrefix(c.Request.URL.String(), "/api/static") ||
 		strings.HasPrefix(c.Request.URL.String(), "/api/v1/file/public") ||
 		strings.HasPrefix(c.Request.URL.String(), "/api/v1/ping") ||
 		strings.HasPrefix(c.Request.URL.String(), "/swagger") ||
+
 		strings.HasPrefix(c.Request.URL.String(), "/api/v1/user/login") {
 		c.Next()
 		// Debug log

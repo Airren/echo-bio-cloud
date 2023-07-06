@@ -94,7 +94,9 @@ func DownloadFileById(c *gin.Context) {
 		bindRespWithStatus(c, http.StatusInternalServerError, nil, err)
 		return
 	}
+
 	contentType := minio.GetContentType(fileInfo.FileType)
+
 
 	fileName := url.QueryEscape(fileInfo.Name)
 	c.Header("Content-Disposition",
