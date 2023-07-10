@@ -54,3 +54,9 @@ func FileAPI(r *gin.RouterGroup) {
 	file.POST("/listByIds", controller.ListFileInfoByIds)
 	file.DELETE("delete_by_ids", controller.DeleteFileInfoByIds)
 }
+
+func InternalAPI(r *gin.RouterGroup) {
+	internal := r.Group("internal")
+	internal.GET("/file_download/:id", controller.DownloadFileById)
+	internal.POST("/file_upload", controller.UploadFile)
+}

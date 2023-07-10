@@ -42,6 +42,7 @@ func main() {
 	apiV1 := r.Group("api/v1/")
 	router.HealthCheck(apiV1)
 	router.FileAPI(apiV1)
+	router.InternalAPI(apiV1)
 	router.StaticAPI(r)
 	router.UserAPI(apiV1)
 

@@ -14,16 +14,18 @@ func AuthMiddleware(c *gin.Context) {
 	// Debug log
 	log.Println(c.Request.URL.String())
 
-
 	if strings.HasPrefix(c.Request.URL.String(), "/api/static") ||
 		strings.HasPrefix(c.Request.URL.String(), "/api/v1/file/public") ||
 		strings.HasPrefix(c.Request.URL.String(), "/api/v1/ping") ||
 		strings.HasPrefix(c.Request.URL.String(), "/swagger") ||
-
 		strings.HasPrefix(c.Request.URL.String(), "/api/v1/user/login") {
 		c.Next()
 		// Debug log
 		log.Println("pass directly")
+		return
+	} else if strings.HasPrefix(c.Request.URL.String(), "/api/v1/internal") {
+		c.Set("user-id", "admin")
+		c.Next()
 		return
 	}
 	// Debug log
