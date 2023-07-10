@@ -43,7 +43,6 @@ func InitConfig() {
 	} else if os.Getenv("ENV") == "dev" {
 		conf, err = os.ReadFile("./conf/echo-bio-cloud-dev.yaml")
 	} else {
-
 		conf, err = os.ReadFile("../conf/echo-bio-cloud-dev.yaml")
 	}
 	if err != nil {

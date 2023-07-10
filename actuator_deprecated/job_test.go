@@ -1,4 +1,4 @@
-package actuator
+package actuator_deprecated
 
 import (
 	"github.com/airren/echo-bio-backend/model"

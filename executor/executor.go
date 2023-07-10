@@ -3,8 +3,6 @@ package executor
 import (
 	"context"
 	"fmt"
-	"github.com/airren/echo-bio-backend/global"
-	"github.com/airren/echo-bio-backend/service"
 	"log"
 	"os"
 	"path/filepath"
@@ -20,6 +18,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/airren/echo-bio-backend/model"
+	"github.com/airren/echo-bio-backend/service"
 )
 
 var JobChan chan model.AnalysisJob
@@ -78,7 +77,7 @@ func (e *Executor) CreateJob(ctx context.Context, analysisJob *model.AnalysisJob
 
 	command, err := service.GetCommandForAnalysisJob(analysisJob)
 	if err != nil {
-		global.Logger.Error("rend analysis_job command failed: ")
+		log.Print("rend analysis_job command failed: ")
 	}
 	var backOffLimit int32 = 0
 

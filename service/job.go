@@ -5,11 +5,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"gorm.io/gorm"
-	"log"
 	"strconv"
 	"text/template"
 	"time"
+
+	log "github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 
 	"github.com/airren/echo-bio-backend/dal"
 	"github.com/airren/echo-bio-backend/model"
@@ -132,7 +133,7 @@ func GetCommandForAnalysisJob(j *model.AnalysisJob) (command string, err error) 
 	// get algorithm detail
 	algo, err := dal.GetAlgorithmByName(context.TODO(), j.Algorithm)
 	if err != nil {
-		log.Println("get algo failed", j)
+		log.Infof("get algo failed", j)
 		return
 	}
 	// get all the need file, and download to the docker image

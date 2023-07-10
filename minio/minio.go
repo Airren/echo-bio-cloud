@@ -3,13 +3,11 @@ package minio
 import (
 	"context"
 	"fmt"
+	"mime/multipart"
 	"strings"
 
 	"github.com/minio/minio-go/v7"
-	"go.uber.org/zap"
-	"mime/multipart"
-
-	"github.com/airren/echo-bio-backend/global"
+	log "github.com/sirupsen/logrus"
 )
 
 func UploadFileToMinio(ctx context.Context, bucket, objectName string, fh *multipart.FileHeader) (
@@ -20,7 +18,7 @@ func UploadFileToMinio(ctx context.Context, bucket, objectName string, fh *multi
 		return err
 	}
 	if !exist {
-		global.Logger.Info(fmt.Sprintf("Bucket:%s does not exist,trying to create", bucket))
+		log.Infof("Bucket:%s does not exist,trying to create", bucket)
 		err := CreateBucket(ctx, bucket)
 		if err != nil {
 			return err
@@ -35,59 +33,58 @@ func UploadFileToMinio(ctx context.Context, bucket, objectName string, fh *multi
 	defer src.Close()
 	_, fileType := GetFileNameType(fh.Filename)
 	contentType := GetContentType(fileType)
-	_, err = global.MinioClient.PutObject(ctx, bucket, objectName,
+	_, err = MinioClient.PutObject(ctx, bucket, objectName,
 		src, fh.Size, minio.PutObjectOptions{ContentType: contentType})
 	if err != nil {
-		global.Logger.Error("Upload fileInfo failed", zap.Error(err))
+		log.Errorf("Upload fileInfo failed")
 		return err
 	}
-	global.Logger.Info("Successfully uploaded file: ", zap.String("name", fh.Filename))
+	log.Infof("Successfully uploaded file: ")
 	return err
 }
 
 //func GetFileUrl(ctx context.Context, bucketName string, fileName string, expires time.Duration) string {
 //	//URL can have a maximum expiry of upto 7days
 //	reqParams := make(url.Values)
-//	fileUrl, err := global.MinioClient.PresignedGetObject(ctx, bucketName, fileName, expires, reqParams)
+//	fileUrl, err := MinioClient.PresignedGetObject(ctx, bucketName, fileName, expires, reqParams)
 //	if err != nil {
-//		global.Logger.Error(err.Error())
+//		Logger.Error(err.Error())
 //		return ""
 //	}
 //	return fmt.Sprintf("%s", fileUrl)
 //}
 
 func DownloadObjectFromMinio(ctx context.Context, bucketName string, objectName string) (*minio.Object, error) {
-	object, err := global.MinioClient.GetObject(ctx, bucketName, objectName, minio.GetObjectOptions{})
+	object, err := MinioClient.GetObject(ctx, bucketName, objectName, minio.GetObjectOptions{})
 	if err != nil {
-		global.Logger.Error(
-			fmt.Sprintf("Failed to download Object for bucketName: %s, objectName: %s", bucketName, objectName))
+		log.Errorf("Failed to download Object for bucketName: %s, objectName: %s", bucketName, objectName)
 		return nil, err
 	}
 	return object, err
 }
 
 func BucketExist(ctx context.Context, bucketName string) (bool, error) {
-	found, err := global.MinioClient.BucketExists(ctx, bucketName)
+	found, err := MinioClient.BucketExists(ctx, bucketName)
 	if err != nil {
-		global.Logger.Error("check bucket existence failed", zap.Error(err))
+		log.Errorf("check bucket existence failed")
 	}
 	return found, err
 }
 
 func CreateBucket(ctx context.Context, bucketName string) error {
 	location := "cn-east-1"
-	err := global.MinioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})
+	err := MinioClient.MakeBucket(ctx, bucketName, minio.MakeBucketOptions{Region: location})
 	if err != nil {
 		// Check to see if we already own this bucket (which happens if you run this twice)
 		exists, errBucketExists := BucketExist(ctx, bucketName)
 		if errBucketExists == nil && exists {
-			global.Logger.Info(fmt.Sprintf("We already own %s\n", bucketName))
+			log.Infof("We already own %s\n", bucketName)
 		} else {
-			global.Logger.Error(fmt.Sprintf("Create Bucket %v failed", bucketName), zap.Error(err))
+			log.Errorf("Create Bucket %v failed", bucketName)
 			return err
 		}
 	} else {
-		global.Logger.Info(fmt.Sprintf("Successfully created %s\n", bucketName))
+		log.Infof("Successfully created %s\n", bucketName)
 	}
 	return err
 }
