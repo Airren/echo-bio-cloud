@@ -8,8 +8,9 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 
 	"github.com/airren/echo-bio-backend/config"
-	"github.com/airren/echo-bio-backend/global"
 )
+
+var MinioClient *minio.Client
 
 func InitMinio() error {
 	var (
@@ -22,7 +23,7 @@ func InitMinio() error {
 		Secure: config.Conf.MinioConf.UseSSL,
 	})
 
-	global.MinioClient = minioClient
+	MinioClient = minioClient
 	log.Printf("successfully establish minio client")
 	log.Printf("%#v\n", minioClient) // minioClient is now set up
 	return err

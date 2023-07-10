@@ -1,9 +1,8 @@
 package main
 
 import (
-	"github.com/airren/echo-bio-backend/global"
-
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
@@ -30,9 +29,8 @@ func main() {
 
 	config.InitConfig()
 	config.AuthInit()
-	config.GetLogger()
 
-	global.Logger.Info("echo-bio start successfully")
+	log.Infof("echo-bio start successfully...")
 	//go executor.Run(context.TODO())
 	//executor.KubeInitializer()
 

@@ -2,7 +2,8 @@ package model
 
 import (
 	"encoding/json"
-	"github.com/airren/echo-bio-backend/global"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type JobStatus string
@@ -29,7 +30,7 @@ type AnalysisJob struct {
 func (j *AnalysisJob) TransferParametersToJson() error {
 	b, err := json.Marshal(j.Parameters)
 	if err != nil {
-		global.Logger.Error("parameter marshal failed")
+		log.Infof("parameter marshal failed")
 		return err
 	}
 	j.ParametersStr = string(b)
@@ -40,7 +41,7 @@ func (j *AnalysisJob) TransferJsonToParameters() error {
 	j.Parameters = make(map[string]interface{})
 	err := json.Unmarshal([]byte(j.ParametersStr), &j.Parameters)
 	if err != nil {
-		global.Logger.Error("parameter unmarshal failed")
+		log.Infof("parameter unmarshal failed")
 		return err
 	}
 	return nil

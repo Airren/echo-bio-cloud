@@ -4,15 +4,15 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"strconv"
 	"time"
 
-	"go.uber.org/zap"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/airren/echo-bio-backend/dal"
-	"github.com/airren/echo-bio-backend/global"
 	minioClient "github.com/airren/echo-bio-backend/minio"
 	"github.com/airren/echo-bio-backend/model"
 	"github.com/airren/echo-bio-backend/model/req"
@@ -31,7 +31,7 @@ func UploadFile(c context.Context, fh *multipart.FileHeader, visibility int) (*v
 	Md5 := fileToMd5(src)
 	fileInfo, err := dal.QueryFileByMd5(c, Md5)
 	if err != nil && err.Error() != "record not found" {
-		global.Logger.Error("check file md5 failed", zap.Error(err))
+		fmt.Println("check file md5 failed")
 		return nil, err
 	}
 	if fileInfo.Id != 0 {
@@ -57,7 +57,7 @@ func UploadFile(c context.Context, fh *multipart.FileHeader, visibility int) (*v
 
 	err = minioClient.UploadFileToMinio(c, fileInfo.Org, fileInfo.MD5, fh)
 	if err != nil {
-		global.Logger.Error("upload file failed", zap.Error(err))
+		fmt.Println("upload file failed")
 		return nil, err
 	}
 
@@ -140,7 +140,7 @@ func FileToVO(file *model.File) *vo.FileVO {
 func fileToMd5(file multipart.File) string {
 	hash := md5.New()
 	if _, err := io.Copy(hash, file); err != nil {
-		global.Logger.Error("failed to convert file to Md5", zap.Error(err))
+		log.Errorf("failed to convert file to Md5", err)
 	}
 	return hex.EncodeToString(hash.Sum(nil))
 }
