@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/airren/echo-bio-backend/mq"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	swaggerfiles "github.com/swaggo/files"
@@ -57,6 +58,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	go mq.ConsumerJob()
 
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/airren/echo-bio-backend/mq"
 	"strconv"
 	"text/template"
 	"time"
@@ -45,6 +46,7 @@ func CreateJob(c context.Context, req req.JobReq) (err error) {
 		return err
 	}
 	_, err = dal.CreateJob(c, job)
+	mq.PublishJob(c, job)
 	return err
 }
 

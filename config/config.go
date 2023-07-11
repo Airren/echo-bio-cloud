@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	MysqlURI    string      `yaml:"mysqlURI"`
+	MqURI       string      `yaml:"mqURI"`
 	CasdoorConf CasdoorConf `yaml:"casdoorConf"`
 	MinioConf   MinioConf   `yaml:"minioConf"`
 }

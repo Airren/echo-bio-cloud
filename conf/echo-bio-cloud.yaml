@@ -1,5 +1,6 @@
 # mysql URI
 mysqlURI: "root:1q2w3e4r%T@tcp(docker.lan:3306)/echo_bio?charset=utf8&parseTime=True&loc=Local"
+mqURI: "amqp://root:1q2w3e4r5t@docker.lan:5672/"
 
 # Casdoor configuration
 casdoorConf:
