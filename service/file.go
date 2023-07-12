@@ -149,7 +149,7 @@ func FileToVO(file *model.File) *vo.FileVO {
 func fileToMd5(file multipart.File) string {
 	hash := md5.New()
 	if _, err := io.Copy(hash, file); err != nil {
-		log.Errorf("failed to convert file to Md5", err)
+		log.Errorf("failed to convert file to Md5: %v", err)
 	}
 	return hex.EncodeToString(hash.Sum(nil))
 }

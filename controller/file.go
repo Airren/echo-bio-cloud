@@ -28,11 +28,13 @@ import (
 //	@Router			/file/upload/ [post]
 func UploadFile(c *gin.Context) {
 	var analysisJobId uint64
+
 	var err error
 	jobIdStr := c.Query("analysis_job_id")
 	if jobIdStr != "" {
 		analysisJobId, err = strconv.ParseUint(jobIdStr, 10, 64)
 	}
+	accountIdStr := c.Query("account_id")
 
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -46,6 +48,9 @@ func UploadFile(c *gin.Context) {
 	}
 
 	ctx := utils.GetCtx(c)
+	if accountIdStr != "" {
+		ctx = utils.SetUserId(ctx, accountIdStr)
+	}
 	fileInfo, err := service.UploadFile(ctx, file, visibility, analysisJobId)
 	if err != nil {
 		bindRespWithStatus(c, http.StatusInternalServerError, nil, err)
