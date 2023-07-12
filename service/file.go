@@ -20,7 +20,7 @@ import (
 	"github.com/airren/echo-bio-backend/utils"
 )
 
-func UploadFile(c context.Context, fh *multipart.FileHeader, visibility int) (*vo.FileVO, error) {
+func UploadFile(c context.Context, fh *multipart.FileHeader, visibility int, jobId uint64) (*vo.FileVO, error) {
 
 	src, err := fh.Open()
 	if err != nil {
@@ -65,6 +65,12 @@ func UploadFile(c context.Context, fh *multipart.FileHeader, visibility int) (*v
 	fileInfo, err = dal.InsertFileInfo(c, fileInfo)
 	if err != nil {
 		return nil, err
+	}
+	if jobId != 0 {
+		err = dal.UpdateJobResult(c, jobId, fileInfo.Id)
+		if err != nil {
+			log.Errorf("upload file to update analysis_job faild: %v", err)
+		}
 	}
 	return FileToVO(fileInfo), err
 }

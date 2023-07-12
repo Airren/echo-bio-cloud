@@ -23,6 +23,7 @@ type AnalysisJob struct {
 	Parameters    map[string]interface{} `gorm:"-"`
 	ParametersStr string                 `gorm:"type:varchar(256); not null"`
 	Outputs       string                 `gorm:"type:varchar(256); not null"`
+	Result        uint64                 `gorm:"type:bigint(32)"`
 	Status        JobStatus              `gorm:"type:varchar(32); not null"`
 	Description   string                 `gorm:"type:text"`
 }
@@ -41,8 +42,7 @@ func (j *AnalysisJob) TransferJsonToParameters() error {
 	j.Parameters = make(map[string]interface{})
 	err := json.Unmarshal([]byte(j.ParametersStr), &j.Parameters)
 	if err != nil {
-		log.Infof("parameter unmarshal failed")
-		return err
+		log.Errorf("analysis_job parameter_str unmarshal failed: %v", err)
 	}
-	return nil
+	return err
 }

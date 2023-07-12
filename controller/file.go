@@ -27,6 +27,13 @@ import (
 //	@Failure		500	{object}	vo.BaseVO
 //	@Router			/file/upload/ [post]
 func UploadFile(c *gin.Context) {
+	var analysisJobId uint64
+	var err error
+	jobIdStr := c.Query("analysis_job_id")
+	if jobIdStr != "" {
+		analysisJobId, err = strconv.ParseUint(jobIdStr, 10, 64)
+	}
+
 	file, err := c.FormFile("file")
 	if err != nil {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)
@@ -39,7 +46,7 @@ func UploadFile(c *gin.Context) {
 	}
 
 	ctx := utils.GetCtx(c)
-	fileInfo, err := service.UploadFile(ctx, file, visibility)
+	fileInfo, err := service.UploadFile(ctx, file, visibility, analysisJobId)
 	if err != nil {
 		bindRespWithStatus(c, http.StatusInternalServerError, nil, err)
 		return
@@ -96,7 +103,6 @@ func DownloadFileById(c *gin.Context) {
 	}
 
 	contentType := minio.GetContentType(fileInfo.FileType)
-
 
 	fileName := url.QueryEscape(fileInfo.Name)
 	c.Header("Content-Disposition",

@@ -12,6 +12,15 @@ func CreateJob(ctx context.Context, job *model.AnalysisJob) (*model.AnalysisJob,
 	return job, err
 }
 
+func UpdateJobStatus(ctx context.Context, jobId uint64, status model.JobStatus) error {
+	_ = db.Model(&model.AnalysisJob{}).Where("id = ?", jobId).Update("status", status)
+	return nil
+}
+func UpdateJobResult(ctx context.Context, jobId uint64, result uint64) error {
+	_ = db.Model(&model.AnalysisJob{}).Where("id = ?", jobId).Update("result", result)
+	return nil
+}
+
 func ListJob(ctx context.Context, job *model.AnalysisJob, pageInfo *model.PageInfo) (
 	jobs []*model.AnalysisJob, err error) {
 	query := db.Model(&model.AnalysisJob{})

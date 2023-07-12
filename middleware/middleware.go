@@ -24,7 +24,8 @@ func AuthMiddleware(c *gin.Context) {
 		log.Println("pass directly")
 		return
 	} else if strings.HasPrefix(c.Request.URL.String(), "/api/v1/internal") {
-		c.Set("user-id", "admin")
+		accountId := c.GetHeader("account_id")
+		c.Set("account-id", accountId)
 		c.Next()
 		return
 	}
@@ -43,7 +44,7 @@ func AuthMiddleware(c *gin.Context) {
 		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
-	c.Set("user-id", claims.Id)
+	c.Set("account-id", claims.Id)
 	//c.SetCookie()
 	c.Next()
 	return

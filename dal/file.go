@@ -54,7 +54,7 @@ func QueryFileById(ctx context.Context, id uint64) (file *model.File, err error)
 		return
 	}
 	userId, _ := utils.GetUserId(ctx)
-	if userId != file.AccountId && userId != "admin" {
+	if userId != file.AccountId {
 		return nil, errors.New("invalid user")
 	}
 	return

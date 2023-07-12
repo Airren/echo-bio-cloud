@@ -26,11 +26,11 @@ func GenerateId() uint64 {
 }
 
 func SetUserId(ctx context.Context, userId string) context.Context {
-	return context.WithValue(ctx, "user-id", userId)
+	return context.WithValue(ctx, "account-id", userId)
 }
 
 func GetUserId(ctx context.Context) (string, error) {
-	userId := ctx.Value("user-id")
+	userId := ctx.Value("account-id")
 	if userId != nil {
 		return userId.(string), nil
 	}

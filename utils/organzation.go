@@ -17,8 +17,8 @@ func GetOrgFromCtx(ctx context.Context) string {
 func GetCtx(c *gin.Context) context.Context {
 	ctx := context.Background()
 	org := c.GetHeader("org")
-	userId, _ := c.Get("user-id")
+	userId, _ := c.Get("account-id")
 
 	ctx = context.WithValue(ctx, "org", org)
-	return context.WithValue(ctx, "user-id", userId)
+	return context.WithValue(ctx, "account-id", userId)
 }

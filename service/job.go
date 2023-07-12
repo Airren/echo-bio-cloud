@@ -1,16 +1,12 @@
 package service
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
-	"github.com/airren/echo-bio-backend/mq"
 	"strconv"
-	"text/template"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 
 	"github.com/airren/echo-bio-backend/dal"
@@ -35,18 +31,17 @@ func CreateJob(c context.Context, req req.JobReq) (err error) {
 		CreatedAt: time.Now(),
 		CreatedBy: userId,
 	}
+	job.Status = model.PENDING
 	err = CheckJobIsValid(c, job)
 	if err != nil {
 		return err
 	}
-	// TODO put this job to the work queue
-
 	err = job.TransferParametersToJson()
 	if err != nil {
 		return err
 	}
 	_, err = dal.CreateJob(c, job)
-	mq.PublishJob(c, job)
+	PublishJob(c, job)
 	return err
 }
 
@@ -116,51 +111,4 @@ func JobToVO(job model.AnalysisJob) *vo.JobVO {
 func GetImageForAnalysisJob(j *model.AnalysisJob) (string, error) {
 	algo, err := dal.GetAlgorithmByName(context.TODO(), j.Algorithm)
 	return algo.DockerImage, err
-}
-
-func GetCommandForAnalysisJob(j *model.AnalysisJob) (command string, err error) {
-
-	if len(j.Parameters) == 0 {
-		err := j.TransferJsonToParameters()
-		if err != nil {
-			return "", err
-		}
-	}
-	//1. download the file to the AnalysisJob container
-	ctx := context.TODO()
-	// wget with
-	//shell := "mkdir -p /tmp/job && wget www.echo-bio.cn:8088/api/v1/file/public/download/${file_id} "
-	//2. create analysis command
-
-	// get algorithm detail
-	algo, err := dal.GetAlgorithmByName(context.TODO(), j.Algorithm)
-	if err != nil {
-		log.Infof("get algo failed", j)
-		return
-	}
-	// get all the need file, and download to the docker image
-	parameters, _ := dal.QueryParameter(ctx, &model.AlgoParameter{
-		AlgorithmId: algo.Id,
-	})
-	fileParameterMap := make(map[string]string)
-	for _, f := range parameters {
-		if f.Type == model.ParamFile {
-			fileParameterMap[f.Name] = j.Parameters[f.Name].(string)
-		}
-	}
-
-	tmpl, err := template.New("test").Parse(algo.Command)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	commandstr := bytes.Buffer{}
-	err = tmpl.Execute(&commandstr, fileParameterMap)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// use go template render the command
-
-	return commandstr.String(), err
-
 }
