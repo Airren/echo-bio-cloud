@@ -17,12 +17,14 @@ func queryByPage(db *gorm.DB, info *model.PageInfo) *gorm.DB {
 		db = db.Order(fmt.Sprintf("%v DESC", info.OrderBy))
 	} else if info.OrderBy != "" {
 		db = db.Order(fmt.Sprintf("%v ASC", info.OrderBy))
+	} else {
+		db = db.Order(fmt.Sprintf("%v DESC", "created_at"))
 	}
-	if info.OrderBy != "" && !info.Asc {
-		db = db.Order(fmt.Sprintf("%v DESC", info.OrderBy))
-	} else if info.OrderBy != "" {
-		db = db.Order(fmt.Sprintf("%v ASC", info.OrderBy))
-	}
+	//if info.OrderBy != "" && !info.Asc {
+	//	db = db.Order(fmt.Sprintf("%v DESC", info.OrderBy))
+	//} else if info.OrderBy != "" {
+	//	db = db.Order(fmt.Sprintf("%v ASC", info.OrderBy))
+	//}
 	return db
 }
 
