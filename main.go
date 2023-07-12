@@ -34,6 +34,7 @@ func main() {
 	log.Infof("echo-bio start successfully...")
 	//go executor.Run(context.TODO())
 	//executor.KubeInitializer()
+	service.KubeInitializer()
 
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())

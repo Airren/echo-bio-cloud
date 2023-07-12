@@ -58,11 +58,11 @@ func CheckJobIsValid(ctx context.Context, job *model.AnalysisJob) error {
 		return err
 	}
 	for _, p := range parameters {
-		if _, ok := job.Parameters[p.Name]; !ok {
+		if _, ok := job.Parameters[p.Name]; p.Required && !ok {
 			if p.Name == "name" {
 				continue
 			}
-			return errors.New(fmt.Sprintf("parameters %s is not provided", p.Name))
+			return errors.New(fmt.Sprintf("for job: %v parameters: %s is not provided", job.Name, p.Name))
 		}
 	}
 	return nil
