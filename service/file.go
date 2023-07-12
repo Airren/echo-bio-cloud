@@ -54,6 +54,9 @@ func UploadFile(c context.Context, fh *multipart.FileHeader, visibility int, job
 	fileInfo.MD5 = Md5
 	fileInfo.Name, fileInfo.FileType = minioClient.GetFileNameType(fh.Filename)
 	fileInfo.Visibility = visibility
+	if fileInfo.Description != "" {
+		fileInfo.Description = fmt.Sprint(jobId)
+	}
 
 	err = minioClient.UploadFileToMinio(c, fileInfo.Org, fileInfo.MD5, fh)
 	if err != nil {
