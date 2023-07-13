@@ -8,6 +8,7 @@ type JobVO struct {
 	Algorithm   string                 `json:"algorithm"`
 	Parameters  map[string]interface{} `json:"parameters"`
 	Outputs     string                 `json:"outputs"`
+	Result      string                 `json:"result"`
 	Status      model.JobStatus        `json:"status"`
 	Description string                 `json:"description"`
 }

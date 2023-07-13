@@ -30,7 +30,7 @@ func KubeInitializer() {
 	config, err := rest.InClusterConfig()
 	if err != nil {
 		// fallback to kubeconfig
-		kubeconfig := filepath.Join("../conf", "kubeconf.yaml")
+		kubeconfig := filepath.Join("./conf", "kubeconf.yaml")
 		if val := os.Getenv("KUBECONFIG"); len(val) != 0 {
 			kubeconfig = val
 		}

@@ -104,6 +104,7 @@ func JobToVO(job model.AnalysisJob) *vo.JobVO {
 		Parameters:  job.Parameters,
 		Outputs:     job.Outputs,
 		Status:      job.Status,
+		Result:      fmt.Sprintf("/api/v1/file/download/%v", job.Result),
 		Description: job.Description,
 	}
 }
