@@ -22,7 +22,6 @@ import (
 	"github.com/airren/echo-bio-backend/model"
 )
 
-var JobChan chan model.AnalysisJob
 var clientSet *kubernetes.Clientset
 var informerFactory informers.SharedInformerFactory
 var Exec = Executor{}

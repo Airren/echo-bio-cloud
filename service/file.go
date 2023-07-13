@@ -74,6 +74,10 @@ func UploadFile(c context.Context, fh *multipart.FileHeader, visibility int, job
 		if err != nil {
 			log.Errorf("upload file to update analysis_job faild: %v", err)
 		}
+		err = dal.UpdateJobStatus(context.TODO(), jobId, model.COMPLETED)
+		if err != nil {
+			log.Errorf("update job %v status failed: %v", jobId, err)
+		}
 	}
 	return FileToVO(fileInfo), err
 }
