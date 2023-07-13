@@ -31,7 +31,7 @@ func KubeInitializer() {
 	config, err := rest.InClusterConfig()
 	if err != nil {
 		// fallback to kubeconfig
-		kubeconfig := filepath.Join("./conf", "kubeconf.yaml")
+		kubeconfig := filepath.Join("../conf", "kubeconf.yaml")
 		if val := os.Getenv("KUBECONFIG"); len(val) != 0 {
 			kubeconfig = val
 		}
@@ -86,7 +86,7 @@ func (e *Executor) CreateJob(ctx context.Context, analysisJob *model.AnalysisJob
 							},
 							Image:           jobImage,
 							ImagePullPolicy: "IfNotPresent",
-							Command:         []string{"bash", "-c", command + ";ls -al && echo success ;sleep infinity"},
+							Command:         []string{"bash", "-c", command + "ls -al && echo success"},
 						},
 					},
 					RestartPolicy: apiv1.RestartPolicyNever,
