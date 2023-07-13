@@ -111,7 +111,7 @@ func GetCommandForAnalysisJob(ctx context.Context, job *model.AnalysisJob) (comm
 	staffDownload := "curl -s http://www.echo-bio.cn:8088/api/v1/internal/file_download/%v?account_id=${ACCOUNT_ID} -o %v;"
 
 	compactAndUpload := `; tar -czvf results.tar.gz ./results;
-curl -X POST http://www.echo-bio.cn:8088/api/v1/internal/file_upload?analysis_job_id=${ANALYSIS_JOB_ID}&account_id=${ACCOUNT_ID} --form 'file=@"/tmp/analysis_job/results.tar.gz"';`
+curl -X POST "http://www.echo-bio.cn:8088/api/v1/internal/file_upload?analysis_job_id=${ANALYSIS_JOB_ID}&account_id=${ACCOUNT_ID}" --form 'file=@"/tmp/analysis_job/results.tar.gz"';`
 
 	if len(job.Parameters) == 0 {
 		err = job.TransferJsonToParameters()
