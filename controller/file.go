@@ -95,7 +95,11 @@ func UpdateFileInfo(c *gin.Context) {
 //	@Failure		500	{object}	vo.BaseVO
 //	@Router			/file/download/{id} [post]
 func DownloadFileById(c *gin.Context) {
+	accountIdStr := c.Query("account_id")
 	ctx := utils.GetCtx(c)
+	if accountIdStr != "" {
+		ctx = utils.SetUserId(ctx, accountIdStr)
+	}
 	fileId, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		bindRespWithStatus(c, http.StatusBadRequest, nil, err)

@@ -108,7 +108,7 @@ func GetCommandForAnalysisJob(ctx context.Context, job *model.AnalysisJob) (comm
 
 	command = "set -ex; mkdir -p /tmp/analysis_job/results && cd /tmp/analysis_job ; "
 
-	staffDownload := "curl -s http://www.echo-bio.cn:8088/api/v1/internal/file_download/%v -o %v;"
+	staffDownload := "curl -s http://www.echo-bio.cn:8088/api/v1/internal/file_download/%v?account_id=${ACCOUNT_ID} -o %v;"
 
 	compactAndUpload := `; tar -czvf results.tar.gz ./results;
 curl -X POST http://www.echo-bio.cn:8088/api/v1/internal/file_upload?analysis_job_id=${ANALYSIS_JOB_ID}&account_id=${ACCOUNT_ID} \
