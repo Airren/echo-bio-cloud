@@ -9,11 +9,11 @@ import (
 type JobStatus string
 
 const (
-	PENDING     JobStatus = "Pending"
-	PROGRESSING JobStatus = "Progressing"
-	COMPLETED   JobStatus = "Completed"
-	FAILED      JobStatus = "Failed"
-	CANCELED    JobStatus = "Canceled"
+	PENDING     JobStatus = "PENDING"
+	PROGRESSING JobStatus = "PROGRESSING"
+	COMPLETED   JobStatus = "COMPLETED"
+	FAILED      JobStatus = "FAILED"
+	CANCELED    JobStatus = "CANCELED"
 )
 
 type AnalysisJob struct {
